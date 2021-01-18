@@ -55,8 +55,8 @@ func (ft *FtAPI) Post(url string, contentType string, body io.Reader) (resp *htt
 	return ft.do(req)
 }
 
-// PostJson this method will automatically turn data into a json and send a post request to the given url
-func (ft *FtAPI) PostJson(url string, data interface{}) (resp *http.Response, err error) {
+// PostJSON this method will automatically turn data into a json and send a post request to the given url
+func (ft *FtAPI) PostJSON(url string, data interface{}) (resp *http.Response, err error) {
 	jsonData, err := json.Marshal(data)
 	if err != nil {
 		return nil, err

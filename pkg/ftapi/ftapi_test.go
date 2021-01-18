@@ -63,7 +63,7 @@ func TestPost(t *testing.T) {
 }
 
 type testData struct {
-	Id   int    `json:"id"`
+	ID   int    `json:"id"`
 	Name string `json:"name"`
 	Array []string `json:"array"`
 }
@@ -79,8 +79,8 @@ func TestPostJson(t *testing.T) {
 	}))
 	defer server.Close()
 	ftAPI := New(server.URL, server.Client())
-	resp, err := ftAPI.PostJson("/v1/users", testData{
-		Id:   10,
+	resp, err := ftAPI.PostJSON("/v1/users", testData{
+		ID:   10,
 		Name: "Spoody",
 		Array: []string{"test_1", "test_2"},
 	})
