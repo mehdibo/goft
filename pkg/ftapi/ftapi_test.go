@@ -1,6 +1,7 @@
 package ftapi
 
 import (
+	"bytes"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/oauth2/clientcredentials"
 	"io"
@@ -38,6 +39,24 @@ func TestGet(t *testing.T) {
 	defer server.Close()
 	ftAPI := New(server.URL, server.Client())
 	resp, err := ftAPI.Get("/v2/users")
+	assert.Nil(t, err)
+	assert.Equal(t, "OK", getBody(resp.Body))
+	assert.Equal(t, "test_value", resp.Header.Get("X-Test"))
+}
+
+func TestPost(t *testing.T) {
+	// Start a local HTTP server
+	server := httptest.NewServer(http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
+		assert.Equal(t, "/v1/users", req.URL.String())
+		assert.Equal(t, "custom/content-type", req.Header.Get("Content-Type"))
+		assert.Equal(t, "this_is_the_body", getBody(req.Body))
+		rw.Header().Add("X-Test", "test_value")
+		_, _ = rw.Write([]byte(`OK`))
+	}))
+	defer server.Close()
+	ftAPI := New(server.URL, server.Client())
+	body := bytes.NewReader([]byte("this_is_the_body"))
+	resp, err := ftAPI.Post("/v1/users", "custom/content-type", body)
 	assert.Nil(t, err)
 	assert.Equal(t, "OK", getBody(resp.Body))
 	assert.Equal(t, "test_value", resp.Header.Get("X-Test"))

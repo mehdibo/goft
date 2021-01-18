@@ -3,6 +3,7 @@ package ftapi
 import (
 	"context"
 	"golang.org/x/oauth2/clientcredentials"
+	"io"
 	"net/http"
 )
 
@@ -38,5 +39,16 @@ func (ft *FtAPI) Get(url string) (*http.Response, error) {
 	if err != nil {
 		return nil, err
 	}
+	return ft.do(req)
+}
+
+// Post sends a POST request to the given url
+func (ft *FtAPI) Post(url string, contentType string, body io.Reader) (resp *http.Response, err error)  {
+	req, err := http.NewRequest("POST", ft.apiEndpoint+url, body)
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("Content-Type", contentType)
+
 	return ft.do(req)
 }
