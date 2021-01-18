@@ -1,0 +1,13 @@
+# You can create the client id and secret here: https://profile.intra.42.fr/oauth/applications/new
+client_id: ""
+client_secret: ""
+scopes: [
+    "public",
+    "projects",
+    "profile",
+    "elearning",
+    "tig",
+    "forum",
+]
+token_endpoint: "https://api.intra.42.fr/oauth/token"
+api_endpoint: "https://api.intra.42.fr/v2"
