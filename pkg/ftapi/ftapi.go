@@ -42,12 +42,15 @@ func (ft *FtAPI) do(req *http.Request) (*http.Response, error)  {
 		}
 		if resp.StatusCode == http.StatusTooManyRequests {
 			// Check if exceeded max hourly rate
-			hourRemaining, _ := strconv.Atoi(resp.Header.Get("X-Hourly-Ratelimit-Remaining"))
-			if hourRemaining <= 0 {
+			retryAfter, _ := strconv.Atoi(resp.Header.Get("Retry-After"))
+			if err != nil {
+				retryAfter = 0
+			}
+			if retryAfter <= 0 {
 				return nil, errors.New("exceeded rate limit")
 			}
-			// We still have tries in the hourly limit, wait for a second
-			time.Sleep(time.Second)
+			// We wait for the duration set by the header
+			time.Sleep(time.Duration(retryAfter) * time.Second)
 			continue
 		}
 		return resp,err
