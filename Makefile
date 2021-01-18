@@ -30,7 +30,7 @@ test:
 
 .PHONY: lint
 lint: vendor
-	golint ./cmd/... ./pkg/...
+	golint -set_exit_status ./cmd/... ./pkg/...
 
 .PHONY: all_platforms
 all_platforms: vendor
