@@ -16,6 +16,9 @@ func NewRootCmd() *cobra.Command {
 	return &cobra.Command{
 		Use:   "go_ft",
 		Short: "CLI tool to interact with 42's API",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return nil
+		},
 	}
 }
 
@@ -41,6 +44,7 @@ func init() {
 }
 
 // initConfig reads in config file and ENV variables if set.
+// This usually will not be executed when running tests
 func initConfig() {
 	if cfgFile != "" {
 		// Use config file from the flag.
@@ -58,10 +62,20 @@ func initConfig() {
 		viper.SetConfigName(".go_ft")
 	}
 
-	viper.AutomaticEnv() // read in environment variables that match
 
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err == nil {
 		fmt.Println("Using config file:", viper.ConfigFileUsed())
+	}
+
+	requiredConfigs := []string{
+		"client_id",
+		"client_secret",
+	}
+	for _, requiredConfig := range requiredConfigs {
+		if viper.GetString(requiredConfig) == "" {
+			_, _ = fmt.Fprintf(rootCmd.OutOrStderr(), "%s is required but not set in the config file\n", requiredConfig)
+			os.Exit(1)
+		}
 	}
 }
