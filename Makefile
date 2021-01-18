@@ -28,6 +28,10 @@ re: fclean all
 test:
 	go test -v ./...
 
+.PHONY: lint
+lint: vendor
+	golint -set_exit_status ./cmd/... ./pkg/...
+
 .PHONY: all_platforms
 all_platforms: vendor
 	for GOOS in darwin linux; do \
