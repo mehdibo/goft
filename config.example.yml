@@ -1,6 +1,7 @@
 # You can create the client id and secret here: https://profile.intra.42.fr/oauth/applications/new
 client_id: ""
 client_secret: ""
+# Defaults to profile if omitted
 scopes: [
     "public",
     "projects",
