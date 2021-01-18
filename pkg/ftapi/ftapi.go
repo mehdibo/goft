@@ -32,6 +32,7 @@ func (ft *FtAPI) do(req *http.Request) (*http.Response, error)  {
 	return ft.httpClient.Do(req)
 }
 
+// Get sends a get request to the given URL
 func (ft *FtAPI) Get(url string) (*http.Response, error) {
 	req, err := http.NewRequest("GET", ft.apiEndpoint+url, nil)
 	if err != nil {
