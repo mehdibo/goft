@@ -16,6 +16,9 @@ func NewRootCmd() *cobra.Command {
 	return &cobra.Command{
 		Use:   "go_ft",
 		Short: "CLI tool to interact with 42's API",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return nil
+		},
 	}
 }
 
@@ -58,10 +61,25 @@ func initConfig() {
 		viper.SetConfigName(".go_ft")
 	}
 
-	viper.AutomaticEnv() // read in environment variables that match
+	viper.SetDefault("token_endpoint", "https://api.intra.42.fr/oauth/token")
+	viper.SetDefault("api_endpoint", "https://api.intra.42.fr/v2")
+	viper.SetDefault("scopes", []string{"profile"})
 
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err == nil {
 		fmt.Println("Using config file:", viper.ConfigFileUsed())
+	}
+
+	requiredConfigs := []string{
+		"client_id",
+		"client_secret",
+	}
+	for _, requiredConfig := range requiredConfigs {
+		if viper.GetString(requiredConfig) == "" {
+			_, _ = fmt.Fprintf(rootCmd.OutOrStderr(), "%s is required but not set in the config file\n", requiredConfig)
+			// This will interfere with unit tests
+			// TODO: look for a workaround
+			os.Exit(1)
+		}
 	}
 }

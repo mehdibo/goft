@@ -3,12 +3,15 @@ package cmd
 import (
 	"bytes"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
 	"io/ioutil"
 	"testing"
 )
 
 func TestNewRootCmd(t *testing.T) {
+	viper.Set("client_id", "test_id")
+	viper.Set("client_secret", "test_secret")
 	b := bytes.NewBufferString("")
 	rootCmd := NewRootCmd()
 	assert.IsType(t, &cobra.Command{}, rootCmd)
@@ -16,5 +19,7 @@ func TestNewRootCmd(t *testing.T) {
 	err := rootCmd.Execute()
 	assert.Nil(t, err)
 	out, err := ioutil.ReadAll(b)
-	assert.Equal(t, "CLI tool to interact with 42's API\n\n", string(out))
+	// Command outputs nothing as it doesnt load a config file
+	// And required configs are set using viper directly
+	assert.Equal(t, "", string(out))
 }
