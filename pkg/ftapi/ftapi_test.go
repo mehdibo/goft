@@ -61,3 +61,30 @@ func TestPost(t *testing.T) {
 	assert.Equal(t, "OK", getBody(resp.Body))
 	assert.Equal(t, "test_value", resp.Header.Get("X-Test"))
 }
+
+type testData struct {
+	Id   int    `json:"id"`
+	Name string `json:"name"`
+	Array []string `json:"array"`
+}
+
+func TestPostJson(t *testing.T) {
+	// Start a local HTTP server
+	server := httptest.NewServer(http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
+		assert.Equal(t, "/v1/users", req.URL.String())
+		assert.Equal(t, "application/json", req.Header.Get("Content-Type"))
+		assert.Equal(t, "{\"id\":10,\"name\":\"Spoody\",\"array\":[\"test_1\",\"test_2\"]}", getBody(req.Body))
+		rw.Header().Add("X-Test", "test_value")
+		_, _ = rw.Write([]byte(`OK`))
+	}))
+	defer server.Close()
+	ftAPI := New(server.URL, server.Client())
+	resp, err := ftAPI.PostJson("/v1/users", testData{
+		Id:   10,
+		Name: "Spoody",
+		Array: []string{"test_1", "test_2"},
+	})
+	assert.Nil(t, err)
+	assert.Equal(t, "OK", getBody(resp.Body))
+	assert.Equal(t, "test_value", resp.Header.Get("X-Test"))
+}

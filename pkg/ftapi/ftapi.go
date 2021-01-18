@@ -1,7 +1,9 @@
 package ftapi
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"golang.org/x/oauth2/clientcredentials"
 	"io"
 	"net/http"
@@ -51,4 +53,14 @@ func (ft *FtAPI) Post(url string, contentType string, body io.Reader) (resp *htt
 	req.Header.Set("Content-Type", contentType)
 
 	return ft.do(req)
+}
+
+// PostJson this method will automatically turn data into a json and send a post request to the given url
+func (ft *FtAPI) PostJson(url string, data interface{}) (resp *http.Response, err error) {
+	jsonData, err := json.Marshal(data)
+	if err != nil {
+		return nil, err
+	}
+
+	return ft.Post(url, "application/json", bytes.NewReader(jsonData))
 }
