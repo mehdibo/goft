@@ -14,7 +14,7 @@ var cfgFile string
 // NewRootCmd Create new root command
 func NewRootCmd() *cobra.Command {
 	return &cobra.Command{
-		Use:   "go_ft",
+		Use:   "goft",
 		Short: "CLI tool to interact with 42's API",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return nil
@@ -40,7 +40,7 @@ func init() {
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
 
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.go_ft.yaml)")
+	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.goft.yaml)")
 }
 
 // initConfig reads in config file and ENV variables if set.
@@ -56,9 +56,9 @@ func initConfig() {
 			os.Exit(1)
 		}
 
-		// Search config in home directory with name ".go_ft" (without extension).
+		// Search config in home directory with name ".goft" (without extension).
 		viper.AddConfigPath(home)
-		viper.SetConfigName(".go_ft")
+		viper.SetConfigName(".goft")
 	}
 
 	viper.SetDefault("token_endpoint", "https://api.intra.42.fr/oauth/token")

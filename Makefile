@@ -1,5 +1,5 @@
 GOCMD=go
-NAME=go_ft
+NAME=goft
 
 all: $(NAME)
 

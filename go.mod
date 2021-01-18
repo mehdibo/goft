@@ -1,4 +1,4 @@
-module go_ft
+module goft
 
 go 1.15
 

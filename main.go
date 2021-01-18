@@ -21,7 +21,7 @@ THE SOFTWARE.
 */
 package main
 
-import "go_ft/cmd"
+import "goft/cmd"
 
 func main() {
 	cmd.Execute()
