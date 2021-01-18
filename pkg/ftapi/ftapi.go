@@ -86,3 +86,17 @@ func (ft *FtAPI) PostJSON(url string, data interface{}) (resp *http.Response, er
 
 	return ft.Post(url, "application/json", bytes.NewReader(jsonData))
 }
+
+func (ft *FtAPI) CreateUser(user *User) error  {
+	payload := map[string]User{
+		"user": *user,
+	}
+	resp, err := ft.PostJSON("/users", payload)
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode != http.StatusCreated {
+		
+	}
+	return nil
+}
