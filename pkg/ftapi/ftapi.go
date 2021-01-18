@@ -26,3 +26,16 @@ func NewFromCredentials(apiEndpoint string, oauthCredentials *clientcredentials.
 	authenticatedClient := oauthCredentials.Client(ctx)
 	return New(apiEndpoint, authenticatedClient)
 }
+
+// Execute the request
+func (ft *FtAPI) do(req *http.Request) (*http.Response, error)  {
+	return ft.httpClient.Do(req)
+}
+
+func (ft *FtAPI) Get(url string) (*http.Response, error) {
+	req, err := http.NewRequest("GET", ft.apiEndpoint+url, nil)
+	if err != nil {
+		return nil, err
+	}
+	return ft.do(req)
+}
