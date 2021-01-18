@@ -103,3 +103,28 @@ func TestHourlyLimit(t *testing.T) {
 	assert.Equal(t, "exceeded rate limit", err.Error())
 	assert.Nil(t, resp)
 }
+
+func TestCreateUser(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
+		assert.Equal(t, "/users", req.URL.String())
+		assert.Equal(t, "application/json", req.Header.Get("Content-Type"))
+		assert.Equal(t,
+			"{\"user\":{\"login\":\"spoody\",\"email\":\"spoody@test.local\",\"first_name\":\"Spooder\",\"last_name\":\"Webz\",\"kind\":\"admin\",\"campus_id\":21}}",
+			getBody(req.Body),
+		)
+		rw.WriteHeader(http.StatusCreated)
+		_, _ = rw.Write([]byte(`Not ok`))
+	}))
+	defer server.Close()
+	ftAPI := New(server.URL, server.Client())
+	user := User{
+		Login:     "spoody",
+		Email:     "spoody@test.local",
+		FirstName: "Spooder",
+		LastName:  "Webz",
+		Kind:      "admin",
+		CampusID:  21,
+	}
+	err := ftAPI.CreateUser(&user)
+	assert.Nil(t, err)
+}
