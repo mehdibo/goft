@@ -62,6 +62,9 @@ func initConfig() {
 		viper.SetConfigName(".go_ft")
 	}
 
+	viper.SetDefault("token_endpoint", "https://api.intra.42.fr/oauth/token")
+	viper.SetDefault("api_endpoint", "https://api.intra.42.fr/v2")
+	viper.SetDefault("scopes", []string{"profile"})
 
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err == nil {
