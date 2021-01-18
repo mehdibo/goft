@@ -4,9 +4,12 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"golang.org/x/oauth2/clientcredentials"
 	"io"
 	"net/http"
+	"strconv"
+	"time"
 )
 
 // FtAPI This is a struct to send authenticated requests to the 42 API
@@ -32,7 +35,23 @@ func NewFromCredentials(apiEndpoint string, oauthCredentials *clientcredentials.
 
 // Execute the request
 func (ft *FtAPI) do(req *http.Request) (*http.Response, error)  {
-	return ft.httpClient.Do(req)
+	for {
+		resp, err := ft.httpClient.Do(req)
+		if err != nil {
+			return resp, err
+		}
+		if resp.StatusCode == http.StatusTooManyRequests {
+			// Check if exceeded max hourly rate
+			hourRemaining, _ := strconv.Atoi(resp.Header.Get("X-Hourly-Ratelimit-Remaining"))
+			if hourRemaining <= 0 {
+				return nil, errors.New("exceeded rate limit")
+			}
+			// We still have tries in the hourly limit, wait for a second
+			time.Sleep(time.Second)
+			continue
+		}
+		return resp,err
+	}
 }
 
 // Get sends a get request to the given URL

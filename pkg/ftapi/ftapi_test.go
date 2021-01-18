@@ -88,3 +88,18 @@ func TestPostJson(t *testing.T) {
 	assert.Equal(t, "OK", getBody(resp.Body))
 	assert.Equal(t, "test_value", resp.Header.Get("X-Test"))
 }
+
+func TestHourlyLimit(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
+		assert.Equal(t, "/v2/users", req.URL.String())
+		rw.Header().Add("X-Hourly-Ratelimit-Remaining", "0")
+		rw.WriteHeader(http.StatusTooManyRequests)
+		_, _ = rw.Write([]byte(`Not ok`))
+	}))
+	defer server.Close()
+	ftAPI := New(server.URL, server.Client())
+	resp, err := ftAPI.Get("/v2/users")
+	assert.NotNil(t, err)
+	assert.Equal(t, "exceeded rate limit", err.Error())
+	assert.Nil(t, resp)
+}
