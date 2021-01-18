@@ -44,7 +44,6 @@ func init() {
 }
 
 // initConfig reads in config file and ENV variables if set.
-// This usually will not be executed when running tests
 func initConfig() {
 	if cfgFile != "" {
 		// Use config file from the flag.
@@ -78,6 +77,8 @@ func initConfig() {
 	for _, requiredConfig := range requiredConfigs {
 		if viper.GetString(requiredConfig) == "" {
 			_, _ = fmt.Fprintf(rootCmd.OutOrStderr(), "%s is required but not set in the config file\n", requiredConfig)
+			// This will interfere with unit tests
+			// TODO: look for a workaround
 			os.Exit(1)
 		}
 	}
