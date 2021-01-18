@@ -18,7 +18,7 @@ func TestNewRootCmd(t *testing.T) {
 	rootCmd.SetOut(b)
 	err := rootCmd.Execute()
 	assert.Nil(t, err)
-	out, err := ioutil.ReadAll(b)
+	out, _ := ioutil.ReadAll(b)
 	// Command outputs nothing as it doesnt load a config file
 	// And required configs are set using viper directly
 	assert.Equal(t, "", string(out))
