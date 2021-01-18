@@ -4,7 +4,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// usersCmd represents the users command
+// NewUsersCmd Creates new users command
 func NewUsersCmd() *cobra.Command {
 	return &cobra.Command{
 		Use:   "users",
