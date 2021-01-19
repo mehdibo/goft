@@ -1,5 +1,8 @@
 GOCMD=go
 NAME=goft
+INSTALL_PATH=/usr/local/bin
+CONFIG_FILE_EXAMPLE=config.example.yml
+CONFIG_FILE_TARGET=$$HOME/.goft.yml
 
 all: $(NAME)
 
@@ -42,3 +45,14 @@ all_platforms: vendor
 			go build -o $(NAME)-$$GOOS-$$GOARCH; \
 		done \
     done
+
+.PHONY: install
+install: $(NAME)
+	sudo mv $(NAME) $(INSTALL_PATH)
+	cp $(CONFIG_FILE_EXAMPLE) $(CONFIG_FILE_TARGET)
+	@echo "You need to edit $(CONFIG_FILE_TARGET) with your credentials"
+
+.PHONY: uninstall
+uninstall:
+	sudo rm $(INSTALL_PATH)/$(NAME)
+	rm $(CONFIG_FILE_TARGET)
