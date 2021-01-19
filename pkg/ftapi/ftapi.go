@@ -168,7 +168,12 @@ func (ft *API) SetUserImage(login string, img *os.File) error {
 		return err
 	}
 	if resp.StatusCode != http.StatusNoContent {
-		return errors.New("failed setting profile image")
+		switch resp.StatusCode {
+		case http.StatusNotFound:
+			return errors.New("user not found")
+		default:
+			return errors.New("failed setting profile image")
+		}
 	}
 	return nil
 }
