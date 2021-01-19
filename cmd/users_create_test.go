@@ -15,23 +15,18 @@ import (
 type mockAPI struct {
 	t *testing.T
 }
-
 func (m *mockAPI) Get(url string) (*http.Response, error) {
 	return nil, nil
 }
-
 func (m *mockAPI) Post(url string, contentType string, body io.Reader) (resp *http.Response, err error) {
 	return nil, nil
 }
-
 func (m *mockAPI) PostJSON(url string, data interface{}) (resp *http.Response, err error) {
 	return nil, nil
 }
-
 func (m *mockAPI) Patch(url string, contentType string, body io.Reader) (resp *http.Response, err error) {
 	return nil, nil
 }
-
 func (m *mockAPI) PatchJSON(url string, data interface{}) (resp *http.Response, err error) {
 	return nil, nil
 }
