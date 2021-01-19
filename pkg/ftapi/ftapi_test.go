@@ -29,6 +29,7 @@ func getBody(body io.ReadCloser) string {
 	return string(bodyBytes)
 }
 
+// TODO: check used method (GET/POST/PATCH...)
 func TestGet(t *testing.T) {
 	// Start a local HTTP server
 	server := httptest.NewServer(http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
