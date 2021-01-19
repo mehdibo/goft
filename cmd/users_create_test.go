@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"bytes"
+	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/assert"
 	"goft/pkg/ftapi"
 	"io"
@@ -44,6 +45,12 @@ func (m *mockAPI) CreateUser(user *ftapi.User) error {
 	}
 
 	return nil
+}
+
+func TestNewUserCreateCmd(t *testing.T) {
+	var api ftapi.APIInterface = &mockAPI{t: t}
+	createCmd := NewUserCreateCmd(&api)
+	assert.IsType(t, &cobra.Command{}, createCmd)
 }
 
 func TestCreateUserWithLogin(t *testing.T) {
