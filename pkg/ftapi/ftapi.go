@@ -86,3 +86,23 @@ func (ft *FtAPI) PostJSON(url string, data interface{}) (resp *http.Response, er
 
 	return ft.Post(url, "application/json", bytes.NewReader(jsonData))
 }
+
+// CreateUser creates a new user and sets `user` id and url to the one returned by the API
+func (ft *FtAPI) CreateUser(user *User) error  {
+	payload := map[string]User{
+		"user": *user,
+	}
+	resp, err := ft.PostJSON("/users", payload)
+	if err != nil {
+		return err
+	}
+	// TODO: better handling errors
+	if resp.StatusCode != http.StatusCreated {
+		return errors.New("failed creating user")
+	}
+	var createdUser User
+	_ = json.NewDecoder(resp.Body).Decode(&createdUser)
+	user.ID = createdUser.ID
+	user.URL = createdUser.URL
+	return nil
+}
