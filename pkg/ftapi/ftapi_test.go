@@ -13,12 +13,12 @@ import (
 
 func TestNew(t *testing.T) {
 	ftAPI := New("https://api.intra.42.fr", &http.Client{})
-	assert.IsType(t, ftAPI, &FtAPI{}, ftAPI)
+	assert.IsType(t, ftAPI, &API{}, ftAPI)
 }
 
 func TestNewFromCredentials(t *testing.T) {
 	ftAPI := NewFromCredentials("https://api.intra.42.fr", &clientcredentials.Config{})
-	assert.IsType(t, ftAPI, &FtAPI{}, ftAPI)
+	assert.IsType(t, ftAPI, &API{}, ftAPI)
 }
 
 func getBody(body io.ReadCloser) string {
