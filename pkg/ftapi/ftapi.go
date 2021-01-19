@@ -41,6 +41,16 @@ func NewFromCredentials(apiEndpoint string, oauthCredentials *clientcredentials.
 	return New(apiEndpoint, authenticatedClient)
 }
 
+func (ft *API) newRequest(method string, contentType string, url string, body io.Reader) (*http.Request, error)  {
+	req, err := http.NewRequest(method, url, body)
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("Content-Type", contentType)
+
+	return req, nil
+}
+
 // Execute the request
 func (ft *API) do(req *http.Request) (*http.Response, error)  {
 	for {
@@ -76,12 +86,10 @@ func (ft *API) Get(url string) (*http.Response, error) {
 
 // Post sends a POST request to the given url
 func (ft *API) Post(url string, contentType string, body io.Reader) (resp *http.Response, err error)  {
-	req, err := http.NewRequest("POST", ft.apiEndpoint+url, body)
+	req, err := ft.newRequest("POST", contentType, ft.apiEndpoint+url, body)
 	if err != nil {
 		return nil, err
 	}
-	req.Header.Set("Content-Type", contentType)
-
 	return ft.do(req)
 }
 
