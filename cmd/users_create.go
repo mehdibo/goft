@@ -4,14 +4,13 @@ import (
 	"errors"
 	"fmt"
 	"goft/pkg/ftapi"
-	"net/http"
 	"strconv"
 
 	"github.com/spf13/cobra"
 )
 
-// userCreateCmd represents the create command
-func NewUserCreateCmd() *cobra.Command {
+// NewUserCreateCmd create the users create cmd
+func NewUserCreateCmd(api *ftapi.APIInterface) *cobra.Command {
 	return &cobra.Command{
 		Use:   "create email first_name last_name kind campus_id",
 		Short: "Create a new user",
@@ -46,13 +45,12 @@ kind must be either admin, student or external.`,
 			if login != "" {
 				user.Login = login
 			}
-			ftAPI := ftapi.New("lo", &http.Client{})
-			_ = ftAPI.CreateUser(&user)
+			_ = (*api).CreateUser(&user)
 			return nil
 		},
 	}
 }
-var userCreateCmd = NewUserCreateCmd()
+var userCreateCmd = NewUserCreateCmd(&API)
 
 func init() {
 	usersCmd.AddCommand(userCreateCmd)
