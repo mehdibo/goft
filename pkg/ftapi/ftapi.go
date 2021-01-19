@@ -124,6 +124,8 @@ func (ft *API) PostJSON(url string, data interface{}) (resp *http.Response, err 
 	return ft.Post(url, "application/json", bytes.NewReader(jsonData))
 }
 
+// TODO: better handle errors
+
 // CreateUser creates a new user and sets `user` id and url to the one returned by the API
 func (ft *API) CreateUser(user *User) error  {
 	payload := map[string]User{
@@ -133,7 +135,6 @@ func (ft *API) CreateUser(user *User) error  {
 	if err != nil {
 		return err
 	}
-	// TODO: better handling errors
 	if resp.StatusCode != http.StatusCreated {
 		return errors.New("failed creating user")
 	}
