@@ -29,10 +29,10 @@ func getBody(body io.ReadCloser) string {
 	return string(bodyBytes)
 }
 
-// TODO: check used method (GET/POST/PATCH...)
 func TestGet(t *testing.T) {
 	// Start a local HTTP server
 	server := httptest.NewServer(http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
+		assert.Equal(t, "GET", req.Method)
 		assert.Equal(t, "/v2/users", req.URL.String())
 		rw.Header().Add("X-Test", "test_value")
 		_, _ = rw.Write([]byte(`OK`))
@@ -48,6 +48,7 @@ func TestGet(t *testing.T) {
 func TestPost(t *testing.T) {
 	// Start a local HTTP server
 	server := httptest.NewServer(http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
+		assert.Equal(t, "POST", req.Method)
 		assert.Equal(t, "/v1/users", req.URL.String())
 		assert.Equal(t, "custom/content-type", req.Header.Get("Content-Type"))
 		assert.Equal(t, "this_is_the_body", getBody(req.Body))
@@ -63,6 +64,25 @@ func TestPost(t *testing.T) {
 	assert.Equal(t, "test_value", resp.Header.Get("X-Test"))
 }
 
+func TestPatch(t *testing.T) {
+	// Start a local HTTP server
+	server := httptest.NewServer(http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
+		assert.Equal(t, "PATCH", req.Method)
+		assert.Equal(t, "/v1/users", req.URL.String())
+		assert.Equal(t, "custom/content-type", req.Header.Get("Content-Type"))
+		assert.Equal(t, "this_is_the_body", getBody(req.Body))
+		rw.Header().Add("X-Test", "test_value")
+		_, _ = rw.Write([]byte(`OK`))
+	}))
+	defer server.Close()
+	ftAPI := New(server.URL, server.Client())
+	body := bytes.NewReader([]byte("this_is_the_body"))
+	resp, err := ftAPI.Patch("/v1/users", "custom/content-type", body)
+	assert.Nil(t, err)
+	assert.Equal(t, "OK", getBody(resp.Body))
+	assert.Equal(t, "test_value", resp.Header.Get("X-Test"))
+}
+
 type testData struct {
 	ID   int    `json:"id"`
 	Name string `json:"name"`
@@ -72,6 +92,7 @@ type testData struct {
 func TestPostJson(t *testing.T) {
 	// Start a local HTTP server
 	server := httptest.NewServer(http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
+		assert.Equal(t, "POST", req.Method)
 		assert.Equal(t, "/v1/users", req.URL.String())
 		assert.Equal(t, "application/json", req.Header.Get("Content-Type"))
 		assert.Equal(t, "{\"id\":10,\"name\":\"Spoody\",\"array\":[\"test_1\",\"test_2\"]}", getBody(req.Body))
@@ -90,8 +111,32 @@ func TestPostJson(t *testing.T) {
 	assert.Equal(t, "test_value", resp.Header.Get("X-Test"))
 }
 
+func TestPatchJson(t *testing.T) {
+	// Start a local HTTP server
+	server := httptest.NewServer(http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
+		assert.Equal(t, "PATCH", req.Method)
+		assert.Equal(t, "/v1/users", req.URL.String())
+		assert.Equal(t, "application/json", req.Header.Get("Content-Type"))
+		assert.Equal(t, "{\"id\":10,\"name\":\"Spoody\",\"array\":[\"test_1\",\"test_2\"]}", getBody(req.Body))
+		rw.Header().Add("X-Test", "test_value")
+		_, _ = rw.Write([]byte(`OK`))
+	}))
+	defer server.Close()
+	ftAPI := New(server.URL, server.Client())
+	resp, err := ftAPI.PatchJSON("/v1/users", testData{
+		ID:   10,
+		Name: "Spoody",
+		Array: []string{"test_1", "test_2"},
+	})
+	assert.Nil(t, err)
+	assert.Equal(t, "OK", getBody(resp.Body))
+	assert.Equal(t, "test_value", resp.Header.Get("X-Test"))
+}
+
+
 func TestHourlyLimit(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
+		assert.Equal(t, "GET", req.Method)
 		assert.Equal(t, "/v2/users", req.URL.String())
 		rw.Header().Add("X-Hourly-Ratelimit-Remaining", "0")
 		rw.WriteHeader(http.StatusTooManyRequests)
@@ -107,6 +152,7 @@ func TestHourlyLimit(t *testing.T) {
 
 func TestCreateUser(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
+		assert.Equal(t, "POST", req.Method)
 		assert.Equal(t, "/users", req.URL.String())
 		assert.Equal(t, "application/json", req.Header.Get("Content-Type"))
 		assert.Equal(t,
