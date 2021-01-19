@@ -29,7 +29,7 @@ re: fclean all
 
 .PHONY: test
 test:
-	go test -v ./...
+	go test -v ./cmd/... ./pkg/...
 
 .PHONY: lint
 lint: vendor
