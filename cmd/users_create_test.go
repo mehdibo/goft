@@ -33,7 +33,6 @@ func (m *mockAPI) PatchJSON(url string, data interface{}) (resp *http.Response, 
 func (m *mockAPI) SetUserImage(login string, img *os.File) error {
 	return nil
 }
-
 func (m *mockAPI) CreateUser(user *ftapi.User) error {
 	if user.Email == "spoody@with.login" {
 		assert.Equal(m.t, "spoody", user.Login)
