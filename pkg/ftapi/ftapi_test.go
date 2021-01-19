@@ -179,3 +179,7 @@ func TestCreateUser(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, expectedUser, user)
 }
+
+func TestSetUserImage(t *testing.T) {
+	t.Fatal("Implement test")
+}
