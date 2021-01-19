@@ -17,6 +17,8 @@ type APIInterface interface {
 	Get(url string) (*http.Response, error)
 	Post(url string, contentType string, body io.Reader) (resp *http.Response, err error)
 	PostJSON(url string, data interface{}) (resp *http.Response, err error)
+	Patch(url string, contentType string, body io.Reader) (resp *http.Response, err error)
+	PatchJSON(url string, data interface{}) (resp *http.Response, err error)
 	CreateUser(user *User) error
 }
 
@@ -91,6 +93,25 @@ func (ft *API) Post(url string, contentType string, body io.Reader) (resp *http.
 		return nil, err
 	}
 	return ft.do(req)
+}
+
+// Patch sends a PATCH request to the given url
+func (ft *API) Patch(url string, contentType string, body io.Reader) (resp *http.Response, err error) {
+	req, err := ft.newRequest("PATCH", contentType, ft.apiEndpoint+url, body)
+	if err != nil {
+		return nil, err
+	}
+	return ft.do(req)
+}
+
+// PatchJSON this method will automatically turn data into a json and send a PATCH request to the given url
+func (ft *API) PatchJSON(url string, data interface{}) (resp *http.Response, err error) {
+	jsonData, err := json.Marshal(data)
+	if err != nil {
+		return nil, err
+	}
+
+	return ft.Patch(url, "application/json", bytes.NewReader(jsonData))
 }
 
 // PostJSON this method will automatically turn data into a json and send a post request to the given url
