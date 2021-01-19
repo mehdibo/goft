@@ -12,6 +12,14 @@ import (
 	"time"
 )
 
+// APIInterface interface for a struct that talks to the 42 API
+type APIInterface interface {
+	Get(url string) (*http.Response, error)
+	Post(url string, contentType string, body io.Reader) (resp *http.Response, err error)
+	PostJSON(url string, data interface{}) (resp *http.Response, err error)
+	CreateUser(user *User) error
+}
+
 // FtAPI This is a struct to send authenticated requests to the 42 API
 type FtAPI struct {
 	apiEndpoint string
@@ -19,7 +27,7 @@ type FtAPI struct {
 }
 
 // New Creates an FtAPI instance
-func New(apiEndpoint string, authenticatedClient *http.Client) *FtAPI  {
+func New(apiEndpoint string, authenticatedClient *http.Client) APIInterface  {
 	return &FtAPI{
 		apiEndpoint: apiEndpoint,
 		httpClient:  authenticatedClient,
@@ -27,7 +35,7 @@ func New(apiEndpoint string, authenticatedClient *http.Client) *FtAPI  {
 }
 
 // NewFromCredentials Creates an FtAPI instance with an authenticated client using the given oAuth2 credentials
-func NewFromCredentials(apiEndpoint string, oauthCredentials *clientcredentials.Config) *FtAPI {
+func NewFromCredentials(apiEndpoint string, oauthCredentials *clientcredentials.Config) APIInterface {
 	ctx := context.Background()
 	authenticatedClient := oauthCredentials.Client(ctx)
 	return New(apiEndpoint, authenticatedClient)
