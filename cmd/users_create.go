@@ -14,8 +14,7 @@ func NewUserCreateCmd(api *ftapi.APIInterface) *cobra.Command {
 	cmd := cobra.Command{
 		Use:   "create email first_name last_name kind campus_id",
 		Short: "Create a new user",
-		Long: `Create a new user account.
-This command requires the Advanced tutor role
+		Long: `This command requires the Advanced tutor role
 No password is set, the user should reset his password using the web interface.
 
 kind must be either admin, student or external.`,
