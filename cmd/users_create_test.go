@@ -8,6 +8,7 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
+	"os"
 	"testing"
 )
 
@@ -33,6 +34,9 @@ func (m *mockAPI) Patch(url string, contentType string, body io.Reader) (resp *h
 
 func (m *mockAPI) PatchJSON(url string, data interface{}) (resp *http.Response, err error) {
 	return nil, nil
+}
+func (m *mockAPI) SetUserImage(login string, img *os.File) error {
+	return nil
 }
 
 func (m *mockAPI) CreateUser(user *ftapi.User) error {
