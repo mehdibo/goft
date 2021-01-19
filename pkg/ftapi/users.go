@@ -2,7 +2,7 @@ package ftapi
 
 // User represents a user entity
 type User struct {
-	ID string `json:"id,omitempty"`
+	ID int `json:"id,omitempty"`
 	Login string `json:"login,omitempty"`
 	Email string `json:"email"`
 	FirstName string `json:"first_name"`
