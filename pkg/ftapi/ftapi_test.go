@@ -113,7 +113,7 @@ func TestCreateUser(t *testing.T) {
 			getBody(req.Body),
 		)
 		rw.WriteHeader(http.StatusCreated)
-		_, _ = rw.Write([]byte(`Not ok`))
+		_, _ = rw.Write([]byte("{\"id\": 127,\"login\":\"spoody\",\"url\": \"https://api.intra.42.fr/v2/users/spoody\"}"))
 	}))
 	defer server.Close()
 	ftAPI := New(server.URL, server.Client())
@@ -125,6 +125,10 @@ func TestCreateUser(t *testing.T) {
 		Kind:      "admin",
 		CampusID:  21,
 	}
+	expectedUser := user
+	expectedUser.ID = 127
+	expectedUser.Url = "https://api.intra.42.fr/v2/users/spoody"
 	err := ftAPI.CreateUser(&user)
 	assert.Nil(t, err)
+	assert.Equal(t, expectedUser, user)
 }
