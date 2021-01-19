@@ -103,6 +103,6 @@ func (ft *FtAPI) CreateUser(user *User) error  {
 	var createdUser User
 	_ = json.NewDecoder(resp.Body).Decode(&createdUser)
 	user.ID = createdUser.ID
-	user.Url = createdUser.Url
+	user.URL = createdUser.URL
 	return nil
 }

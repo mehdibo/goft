@@ -9,5 +9,5 @@ type User struct {
 	LastName string `json:"last_name"`
 	Kind string `json:"kind"`
 	CampusID int `json:"campus_id"`
-	Url string `json:"url,omitempty"`
+	URL string `json:"url,omitempty"`
 }

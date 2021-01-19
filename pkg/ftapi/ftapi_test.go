@@ -127,7 +127,7 @@ func TestCreateUser(t *testing.T) {
 	}
 	expectedUser := user
 	expectedUser.ID = 127
-	expectedUser.Url = "https://api.intra.42.fr/v2/users/spoody"
+	expectedUser.URL = "https://api.intra.42.fr/v2/users/spoody"
 	err := ftAPI.CreateUser(&user)
 	assert.Nil(t, err)
 	assert.Equal(t, expectedUser, user)
