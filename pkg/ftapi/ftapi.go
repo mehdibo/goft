@@ -7,7 +7,10 @@ import (
 	"errors"
 	"golang.org/x/oauth2/clientcredentials"
 	"io"
+	"mime/multipart"
 	"net/http"
+	"os"
+	"path/filepath"
 	"strconv"
 	"time"
 )
@@ -20,6 +23,7 @@ type APIInterface interface {
 	Patch(url string, contentType string, body io.Reader) (resp *http.Response, err error)
 	PatchJSON(url string, data interface{}) (resp *http.Response, err error)
 	CreateUser(user *User) error
+	SetUserImage(login string, img *os.File) error
 }
 
 // API This is a struct to send authenticated requests to the 42 API
@@ -110,7 +114,6 @@ func (ft *API) PatchJSON(url string, data interface{}) (resp *http.Response, err
 	if err != nil {
 		return nil, err
 	}
-
 	return ft.Patch(url, "application/json", bytes.NewReader(jsonData))
 }
 
@@ -120,7 +123,6 @@ func (ft *API) PostJSON(url string, data interface{}) (resp *http.Response, err 
 	if err != nil {
 		return nil, err
 	}
-
 	return ft.Post(url, "application/json", bytes.NewReader(jsonData))
 }
 
@@ -142,5 +144,31 @@ func (ft *API) CreateUser(user *User) error  {
 	_ = json.NewDecoder(resp.Body).Decode(&createdUser)
 	user.ID = createdUser.ID
 	user.URL = createdUser.URL
+	return nil
+}
+
+// SetUserImage set a profile image to the user
+func (ft *API) SetUserImage(login string, img *os.File) error {
+	body := &bytes.Buffer{}
+	writer := multipart.NewWriter(body)
+	part, err := writer.CreateFormFile("user[image]", filepath.Base(img.Name()))
+	if err != nil {
+		return err
+	}
+	_, err = io.Copy(part, img)
+	if err != nil {
+		return err
+	}
+	err = writer.Close()
+	if err != nil {
+		return err
+	}
+	resp, err := ft.Patch("/users/"+login, writer.FormDataContentType(), body)
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode != http.StatusNoContent {
+		return errors.New("failed setting profile image")
+	}
 	return nil
 }
