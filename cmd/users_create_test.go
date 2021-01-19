@@ -10,23 +10,23 @@ import (
 	"testing"
 )
 
-type mockApi struct {
+type mockAPI struct {
 	t *testing.T
 }
 
-func (m *mockApi) Get(url string) (*http.Response, error) {
+func (m *mockAPI) Get(url string) (*http.Response, error) {
 	return nil, nil
 }
 
-func (m *mockApi) Post(url string, contentType string, body io.Reader) (resp *http.Response, err error) {
+func (m *mockAPI) Post(url string, contentType string, body io.Reader) (resp *http.Response, err error) {
 	return nil, nil
 }
 
-func (m *mockApi) PostJSON(url string, data interface{}) (resp *http.Response, err error) {
+func (m *mockAPI) PostJSON(url string, data interface{}) (resp *http.Response, err error) {
 	return nil, nil
 }
 
-func (m *mockApi) CreateUser(user *ftapi.User) error {
+func (m *mockAPI) CreateUser(user *ftapi.User) error {
 	if user.Email == "spoody@with.login" {
 		assert.Equal(m.t, "spoody", user.Login)
 		assert.Equal(m.t, "Mehdi", user.FirstName)
@@ -47,7 +47,7 @@ func (m *mockApi) CreateUser(user *ftapi.User) error {
 }
 
 func TestCreateUserWithLogin(t *testing.T) {
-	var api ftapi.APIInterface = &mockApi{t: t}
+	var api ftapi.APIInterface = &mockAPI{t: t}
 	stdout := bytes.NewBufferString("")
 	createCmd := NewUserCreateCmd(&api)
 	createCmd.SetArgs([]string{"--login", "spoody", "spoody@with.login", "Mehdi", "Bounya", "admin", "21"})
@@ -62,7 +62,7 @@ func TestCreateUserWithLogin(t *testing.T) {
 }
 
 func TestCreateUserWithoutLogin(t *testing.T) {
-	var api ftapi.APIInterface = &mockApi{t: t}
+	var api ftapi.APIInterface = &mockAPI{t: t}
 	stdout := bytes.NewBufferString("")
 	createCmd := NewUserCreateCmd(&api)
 	createCmd.SetArgs([]string{"spoody@without.login", "Mehdi", "Bounya", "admin", "21"})
@@ -77,7 +77,7 @@ func TestCreateUserWithoutLogin(t *testing.T) {
 }
 
 func TestCreateUserWithInvalidArgs(t *testing.T) {
-	var api ftapi.APIInterface = &mockApi{t: t}
+	var api ftapi.APIInterface = &mockAPI{t: t}
 	stderr := bytes.NewBufferString("")
 	stdout := bytes.NewBufferString("")
 	createCmd := NewUserCreateCmd(&api)
@@ -94,7 +94,7 @@ func TestCreateUserWithInvalidArgs(t *testing.T) {
 }
 
 func TestCreateUserWithInvalidKind(t *testing.T) {
-	var api ftapi.APIInterface = &mockApi{t: t}
+	var api ftapi.APIInterface = &mockAPI{t: t}
 	stderr := bytes.NewBufferString("")
 	stdout := bytes.NewBufferString("")
 	createCmd := NewUserCreateCmd(&api)
@@ -112,7 +112,7 @@ func TestCreateUserWithInvalidKind(t *testing.T) {
 }
 
 func TestCreateUserWithInvalidCampusId(t *testing.T) {
-	var api ftapi.APIInterface = &mockApi{t: t}
+	var api ftapi.APIInterface = &mockAPI{t: t}
 	stderr := bytes.NewBufferString("")
 	stdout := bytes.NewBufferString("")
 	createCmd := NewUserCreateCmd(&api)
