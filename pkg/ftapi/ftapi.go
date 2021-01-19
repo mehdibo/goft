@@ -20,21 +20,21 @@ type APIInterface interface {
 	CreateUser(user *User) error
 }
 
-// FtAPI This is a struct to send authenticated requests to the 42 API
-type FtAPI struct {
+// API This is a struct to send authenticated requests to the 42 API
+type API struct {
 	apiEndpoint string
 	httpClient *http.Client
 }
 
-// New Creates an FtAPI instance
+// New Creates an API instance
 func New(apiEndpoint string, authenticatedClient *http.Client) APIInterface  {
-	return &FtAPI{
+	return &API{
 		apiEndpoint: apiEndpoint,
 		httpClient:  authenticatedClient,
 	}
 }
 
-// NewFromCredentials Creates an FtAPI instance with an authenticated client using the given oAuth2 credentials
+// NewFromCredentials Creates an API instance with an authenticated client using the given oAuth2 credentials
 func NewFromCredentials(apiEndpoint string, oauthCredentials *clientcredentials.Config) APIInterface {
 	ctx := context.Background()
 	authenticatedClient := oauthCredentials.Client(ctx)
@@ -42,7 +42,7 @@ func NewFromCredentials(apiEndpoint string, oauthCredentials *clientcredentials.
 }
 
 // Execute the request
-func (ft *FtAPI) do(req *http.Request) (*http.Response, error)  {
+func (ft *API) do(req *http.Request) (*http.Response, error)  {
 	for {
 		resp, err := ft.httpClient.Do(req)
 		if err != nil {
@@ -66,7 +66,7 @@ func (ft *FtAPI) do(req *http.Request) (*http.Response, error)  {
 }
 
 // Get sends a get request to the given URL
-func (ft *FtAPI) Get(url string) (*http.Response, error) {
+func (ft *API) Get(url string) (*http.Response, error) {
 	req, err := http.NewRequest("GET", ft.apiEndpoint+url, nil)
 	if err != nil {
 		return nil, err
@@ -75,7 +75,7 @@ func (ft *FtAPI) Get(url string) (*http.Response, error) {
 }
 
 // Post sends a POST request to the given url
-func (ft *FtAPI) Post(url string, contentType string, body io.Reader) (resp *http.Response, err error)  {
+func (ft *API) Post(url string, contentType string, body io.Reader) (resp *http.Response, err error)  {
 	req, err := http.NewRequest("POST", ft.apiEndpoint+url, body)
 	if err != nil {
 		return nil, err
@@ -86,7 +86,7 @@ func (ft *FtAPI) Post(url string, contentType string, body io.Reader) (resp *htt
 }
 
 // PostJSON this method will automatically turn data into a json and send a post request to the given url
-func (ft *FtAPI) PostJSON(url string, data interface{}) (resp *http.Response, err error) {
+func (ft *API) PostJSON(url string, data interface{}) (resp *http.Response, err error) {
 	jsonData, err := json.Marshal(data)
 	if err != nil {
 		return nil, err
@@ -96,7 +96,7 @@ func (ft *FtAPI) PostJSON(url string, data interface{}) (resp *http.Response, er
 }
 
 // CreateUser creates a new user and sets `user` id and url to the one returned by the API
-func (ft *FtAPI) CreateUser(user *User) error  {
+func (ft *API) CreateUser(user *User) error  {
 	payload := map[string]User{
 		"user": *user,
 	}
