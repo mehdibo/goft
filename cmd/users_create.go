@@ -11,7 +11,7 @@ import (
 
 // NewUserCreateCmd create the users create cmd
 func NewUserCreateCmd(api *ftapi.APIInterface) *cobra.Command {
-	return &cobra.Command{
+	cmd := cobra.Command{
 		Use:   "create email first_name last_name kind campus_id",
 		Short: "Create a new user",
 		Long: `Create a new user account.
@@ -45,26 +45,19 @@ kind must be either admin, student or external.`,
 			if login != "" {
 				user.Login = login
 			}
-			_ = (*api).CreateUser(&user)
+			err := (*api).CreateUser(&user)
+			if err != nil {
+				return err
+			}
+			_, _ = fmt.Fprint(cmd.OutOrStdout(), "User created\n")
 			return nil
 		},
 	}
+	cmd.Flags().String("login", "", "Set a custom login, leave empty to let the intra generate one")
+	return &cmd
 }
 var userCreateCmd = NewUserCreateCmd(&API)
 
 func init() {
 	usersCmd.AddCommand(userCreateCmd)
-
-	// login - password
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// userCreateCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// userCreateCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-	userCreateCmd.Flags().String("login", "", "Set a custom login, leave empty to let the intra generate one")
 }
