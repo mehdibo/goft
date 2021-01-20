@@ -17,13 +17,15 @@ var cfgFile string
 var API ftapi.APIInterface
 // NewRootCmd Create new root command
 func NewRootCmd() *cobra.Command {
-	return &cobra.Command{
+	cmd := cobra.Command{
 		Use:   "goft",
 		Short: "CLI tool to interact with 42's API",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return nil
 		},
 	}
+	cmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.goft.yaml)")
+	return &cmd
 }
 
 var rootCmd = NewRootCmd()
@@ -39,12 +41,6 @@ func Execute() {
 
 func init() {
 	cobra.OnInitialize(initConfig)
-
-	// Here you will define your flags and configuration settings.
-	// Cobra supports persistent flags, which, if defined here,
-	// will be global for your application.
-
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.goft.yaml)")
 }
 
 // initConfig reads in config file and ENV variables if set.
