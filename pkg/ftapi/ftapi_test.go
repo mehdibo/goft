@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"testing"
 )
 
@@ -181,5 +182,28 @@ func TestCreateUser(t *testing.T) {
 }
 
 func TestSetUserImage(t *testing.T) {
-	t.Fatal("Implement test")
+	server := httptest.NewServer(http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
+		err := req.ParseMultipartForm(10 << 20)
+		assert.Nil(t, err)
+		assert.Equal(t, "PATCH", req.Method)
+		assert.Equal(t, "/users/spoody", req.URL.String())
+		assert.Contains(t, req.Header.Get("Content-Type"), "multipart/form-data; boundary=")
+		file, fileHeader, err := req.FormFile("user[image]")
+		assert.Nil(t, err)
+		assert.NotNil(t, file)
+		assert.NotNil(t, fileHeader)
+		assert.Equal(t, "profile_photo.png", fileHeader.Filename)
+		assert.Equal(t, int64(99412), fileHeader.Size)
+		assert.Equal(t, "form-data; name=\"user[image]\"; filename=\"profile_photo.png\"", fileHeader.Header.Get("Content-Disposition"))
+		rw.WriteHeader(http.StatusNoContent)
+	}))
+	defer server.Close()
+	imgFile, err := os.Open("../../tests/profile_photo.png")
+	if err != nil {
+		t.Fatal(err)
+	}
+	ftAPI := New(server.URL, server.Client())
+	err = ftAPI.SetUserImage("spoody", imgFile)
+	imgFile.Close()
+	assert.Nil(t, err)
 }
