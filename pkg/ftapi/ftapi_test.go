@@ -207,3 +207,35 @@ func TestSetUserImage(t *testing.T) {
 	imgFile.Close()
 	assert.Nil(t, err)
 }
+
+func TestSetUserImageWithNotFound(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
+		rw.WriteHeader(http.StatusNotFound)
+	}))
+	defer server.Close()
+	imgFile, err := os.Open("../../tests/profile_photo.png")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer imgFile.Close()
+	ftAPI := New(server.URL, server.Client())
+	err = ftAPI.SetUserImage("spoody", imgFile)
+	assert.NotNil(t, err)
+	assert.Equal(t, "user not found", err.Error())
+}
+
+func TestSetUserImageWithFailure(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
+		rw.WriteHeader(http.StatusInternalServerError)
+	}))
+	defer server.Close()
+	imgFile, err := os.Open("../../tests/profile_photo.png")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer imgFile.Close()
+	ftAPI := New(server.URL, server.Client())
+	err = ftAPI.SetUserImage("spoody", imgFile)
+	assert.NotNil(t, err)
+	assert.Equal(t, "failed setting profile image", err.Error())
+}
