@@ -20,9 +20,6 @@ func NewRootCmd() *cobra.Command {
 	cmd := cobra.Command{
 		Use:   "goft",
 		Short: "CLI tool to interact with 42's API",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			return nil
-		},
 	}
 	cmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.goft.yaml)")
 	return &cmd

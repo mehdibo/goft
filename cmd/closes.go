@@ -9,9 +9,6 @@ func NewClosesCmd() *cobra.Command {
 	return &cobra.Command{
 		Use:   "closes",
 		Short: "Manage users' closes",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			return nil
-		},
 	}
 }
 var closesCmd = NewClosesCmd()

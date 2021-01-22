@@ -9,9 +9,6 @@ func NewUsersCmd() *cobra.Command {
 	return &cobra.Command{
 		Use:   "users",
 		Short: "Interact with the user entity",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			return nil
-		},
 	}
 
 }
