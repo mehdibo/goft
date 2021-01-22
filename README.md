@@ -1,4 +1,11 @@
 # goft
+![Tests](https://github.com/mehdibo/goft/workflows/Tests/badge.svg?branch=develop)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/mehdibo/goft)
+[![GitHub license](https://img.shields.io/github/license/mehdibo/goft)](https://github.com/mehdibo/goft/blob/develop/LICENSE)
+[![GitHub issues](https://img.shields.io/github/issues/mehdibo/goft)](https://github.com/mehdibo/goft/issues)
+![GitHub all releases](https://img.shields.io/github/downloads/mehdibo/goft/total)
+
+
 A CLI tool to use 42's API
 
 # Usage
