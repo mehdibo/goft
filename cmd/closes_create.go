@@ -26,7 +26,7 @@ func isValidKind(kind string) bool {
 func NewCloseCreateCmd(api *ftapi.APIInterface) *cobra.Command {
 	// login - kind - reason -
 	return &cobra.Command{
-		Use:   "create login kind reason closer_id",
+		Use:   "create login kind reason closer_id", // TODO: Use login for closer instead
 		Short: "Create a new close for a user",
 		Long: `This command requires the Basic staff role
 
