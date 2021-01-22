@@ -44,7 +44,7 @@ kind must be one of the following options: agu, black_hole, deserter, non_admitt
 				Reason: args[2],
 				CommunityServices: nil,
 				User: &ftapi.User{
-					Login: args[3],
+					Login: args[0],
 				},
 			})
 			return err
