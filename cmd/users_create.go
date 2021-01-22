@@ -45,7 +45,6 @@ kind must be either admin, student or external.`,
 				user.Login = login
 			}
 			err := (*api).CreateUser(&user)
-			// TODO: stop printing errors and let cobra handle the return
 			if err != nil {
 				return err
 			}
