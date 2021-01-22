@@ -43,6 +43,9 @@ func (m *setImgMockAPI) SetUserImage(login string, img *os.File) error {
 func (m *setImgMockAPI) CreateUser(user *ftapi.User) error {
 	return nil
 }
+func (m *setImgMockAPI) CreateClose(close *ftapi.Close) error {
+	return nil
+}
 
 func TestNewSetImgCmd(t *testing.T) {
 	var api ftapi.APIInterface = &setImgMockAPI{t: t}

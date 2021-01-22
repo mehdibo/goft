@@ -239,3 +239,27 @@ func TestSetUserImageWithFailure(t *testing.T) {
 	assert.NotNil(t, err)
 	assert.Equal(t, "failed setting profile image", err.Error())
 }
+
+func TestCreateClose(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
+		assert.Equal(t, "POST", req.Method)
+		assert.Equal(t, "/users/spoody/closes", req.URL.String())
+		assert.Equal(t, "application/json", req.Header.Get("Content-Type"))
+		assert.Equal(t,
+			"{\"close\":{\"kind\":\"agu\",\"reason\":\"This is for testing purposes\"}}",
+			getBody(req.Body),
+		)
+		rw.WriteHeader(http.StatusCreated)
+		_, _ = rw.Write([]byte("{\"id\":13,\"reason\":\"This is for testing purposes\",\"state\":\"close\",\"created_at\":\"2017-11-22T13:43:29.676Z\",\"updated_at\":\"2017-11-22T13:43:29.676Z\",\"community_services\":[],\"user\":{\"id\":37,\"login\":\"ebou-nya\",\"url\":\"https://api.intra.42.fr/v2/users/ebou-nya\"},\"closer\":{\"id\":42,\"login\":\"spoody\",\"url\":\"https://api.intra.42.fr/v2/users/spoody\"}}"))
+	}))
+	defer server.Close()
+	ftAPI := New(server.URL, server.Client())
+	err := ftAPI.CreateClose(&Close{
+		Kind:              "agu",
+		Reason:            "This is for testing purposes",
+		User:              &User{
+			Login:     "spoody",
+		},
+	})
+	assert.Nil(t, err)
+}

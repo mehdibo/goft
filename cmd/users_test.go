@@ -3,15 +3,12 @@ package cmd
 import (
 	"bytes"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
 	"io/ioutil"
 	"testing"
 )
 
 func TestNewUsersCmd(t *testing.T) {
-	viper.Set("client_id", "test_id")
-	viper.Set("client_secret", "test_secret")
 	b := bytes.NewBufferString("")
 	usersCmd := NewUsersCmd()
 	assert.IsType(t, &cobra.Command{}, usersCmd)
