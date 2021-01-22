@@ -42,6 +42,7 @@ func (m *createCloseMockAPI) CreateClose(close *ftapi.Close) error {
 	assert.Equal(m.t, "other", close.Kind)
 	assert.Equal(m.t, "Testing purposes", close.Reason)
 	assert.Equal(m.t, "spoody", close.User.Login)
+	assert.Equal(m.t, 42, close.Closer.ID)
 	return nil
 }
 
@@ -65,7 +66,7 @@ func TestCreateClose(t *testing.T) {
 
 	testCmd := NewCloseCreateCmd(&api)
 
-	testCmd.SetArgs([]string{"spoody", "other", "Testing purposes"})
+	testCmd.SetArgs([]string{"spoody", "other", "Testing purposes", "42"})
 	testCmd.SetOut(stdout)
 	testCmd.SetErr(stderr)
 	err := testCmd.Execute()
@@ -92,7 +93,7 @@ func TestCreateCloseInvalid(t *testing.T) {
 
 	testCmd := NewCloseCreateCmd(&api)
 
-	testCmd.SetArgs([]string{"spoody", "invalid_kind", "Testing purposes"})
+	testCmd.SetArgs([]string{"spoody", "invalid_kind", "Testing purposes", "42"})
 	testCmd.SetOut(stdout)
 	testCmd.SetErr(stderr)
 	err := testCmd.Execute()
