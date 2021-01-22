@@ -52,6 +52,9 @@ func (m *mockAPI) CreateUser(user *ftapi.User) error {
 
 	return nil
 }
+func (m *mockAPI) CreateClose(close *ftapi.Close) error {
+	return nil
+}
 
 func TestNewUserCreateCmd(t *testing.T) {
 	var api ftapi.APIInterface = &mockAPI{t: t}
