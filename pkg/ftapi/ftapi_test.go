@@ -246,7 +246,7 @@ func TestCreateClose(t *testing.T) {
 		assert.Equal(t, "/users/spoody/closes", req.URL.String())
 		assert.Equal(t, "application/json", req.Header.Get("Content-Type"))
 		assert.Equal(t,
-			"{\"close\":{\"kind\":\"agu\",\"reason\":\"This is for testing purposes\"}}",
+			"{\"close\":{\"closer_id\":37,\"kind\":\"agu\",\"reason\":\"This is for testing purposes\"}}",
 			getBody(req.Body),
 		)
 		rw.WriteHeader(http.StatusCreated)
@@ -259,6 +259,9 @@ func TestCreateClose(t *testing.T) {
 		Reason:            "This is for testing purposes",
 		User:              &User{
 			Login:     "spoody",
+		},
+		Closer: &User{
+			ID: 37,
 		},
 	})
 	assert.Nil(t, err)
