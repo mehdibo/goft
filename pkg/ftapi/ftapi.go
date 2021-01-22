@@ -190,6 +190,10 @@ func (ft *API) CreateClose(close *Close) error  {
 	if close.User == nil || close.User.Login == "" {
 		return errors.New("close must contain a user")
 	}
+	if close.Closer == nil || close.Closer.ID == 0 {
+		return errors.New("close must contain a closer")
+	}
+	payload["close"]["closer_id"] = close.Closer.ID
 	resp, err := ft.PostJSON("/users/"+close.User.Login+"/closes", payload)
 	if err != nil {
 		return err
