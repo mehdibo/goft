@@ -51,8 +51,8 @@ kind must be one of the following options: agu, black_hole, deserter, non_admitt
 		},
 	}
 }
-var createCmd = NewCloseCreateCmd(&API)
+var closesCreateCmd = NewCloseCreateCmd(&API)
 
 func init() {
-	closesCmd.AddCommand(createCmd)
+	closesCmd.AddCommand(closesCreateCmd)
 }
