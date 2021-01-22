@@ -179,12 +179,16 @@ func (ft *API) SetUserImage(login string, img *os.File) error {
 	return nil
 }
 
+// CreateClose creates a new close for the close.user, following properties must be set: close.Kind, close.Reason and close.User.Login
 func (ft *API) CreateClose(close *Close) error  {
 	payload := map[string]map[string]interface{}{
 		"close": {
 			"kind": close.Kind,
 			"reason": close.Reason,
 		},
+	}
+	if close.User == nil || close.User.Login == "" {
+		return errors.New("close must contain a user")
 	}
 	resp, err := ft.PostJSON("/users/"+close.User.Login+"/closes", payload)
 	if err != nil {
