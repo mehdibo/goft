@@ -43,6 +43,9 @@ func (m *createCloseMockAPI) CreateClose(close *ftapi.Close) error {
 	assert.Equal(m.t, 42, close.Closer.ID)
 	return nil
 }
+func (m *createCloseMockAPI) GetUserByLogin(login string) (*ftapi.User, error) {
+	return nil, nil
+}
 
 func TestNewCloseCreateCmd(t *testing.T) {
 	var api ftapi.APIInterface = &createCloseMockAPI{t: t}
