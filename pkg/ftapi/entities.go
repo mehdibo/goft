@@ -1,6 +1,8 @@
 package ftapi
 
-import "time"
+import (
+	"time"
+)
 
 type language struct {
 	ID int `json:"id,omitempty"`
@@ -10,7 +12,8 @@ type language struct {
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 }
 
-type campus struct {
+// Campus represents a campus entity
+type Campus struct {
 	ID int `json:"id,omitempty"`
 	Name string `json:"name,omitempty"`
 	TimeZone string `json:"time_zone,omitempty"`
@@ -42,8 +45,29 @@ type User struct {
 	URL string `json:"url,omitempty"`
 	PoolMonth string `json:"pool_month,omitempty"`
 	PoolYear string `json:"pool_year,omitempty"`
-	Campuses []*campus `json:"campus,omitempty"`
+	Campuses []*Campus `json:"campus,omitempty"`
 	CampusUsers []*campusUser `json:"campus_users,omitempty"`
+}
+
+// GetPrimaryCampus returns the user's primary campus or nil if none found
+func (u *User) GetPrimaryCampus() *Campus {
+	if u.CampusUsers == nil || u.Campuses == nil {
+		return nil
+	}
+	var primaryCampusID int
+	for _, campusUser := range u.CampusUsers {
+		if !campusUser.IsPrimary {
+			continue
+		}
+		primaryCampusID = campusUser.CampusID
+		break
+	}
+	for _, campus := range u.Campuses {
+		if campus.ID == primaryCampusID {
+			return campus
+		}
+	}
+	return nil
 }
 
 type communityService struct {
