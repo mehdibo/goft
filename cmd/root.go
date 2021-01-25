@@ -78,8 +78,6 @@ func initConfig() {
 	for _, requiredConfig := range requiredConfigs {
 		if viper.GetString(requiredConfig) == "" {
 			_, _ = fmt.Fprintf(rootCmd.OutOrStderr(), "%s is required but not set in the config file\n", requiredConfig)
-			// This will interfere with unit tests
-			// TODO: look for a workaround
 			os.Exit(1)
 		}
 	}
