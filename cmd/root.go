@@ -58,6 +58,10 @@ func initConfig() {
 		viper.SetConfigName(".goft")
 	}
 
+	// Load config from env variables if available
+	viper.SetEnvPrefix("goft")
+	viper.AutomaticEnv()
+
 	viper.SetDefault("token_endpoint", "https://api.intra.42.fr/oauth/token")
 	viper.SetDefault("api_endpoint", "https://api.intra.42.fr/v2")
 	viper.SetDefault("scopes", []string{"profile"})
