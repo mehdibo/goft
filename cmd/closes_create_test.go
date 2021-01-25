@@ -2,9 +2,7 @@ package cmd
 
 import (
 	"bytes"
-	"fmt"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
 	"goft/pkg/ftapi"
 	"io"
@@ -44,13 +42,6 @@ func (m *createCloseMockAPI) CreateClose(close *ftapi.Close) error {
 	assert.Equal(m.t, "spoody", close.User.Login)
 	assert.Equal(m.t, 42, close.Closer.ID)
 	return nil
-}
-
-// TODO: figure out why some tests work and some don't
-func init() {
-	fmt.Println("Running init tests")
-	viper.Set("client_id", "test_id")
-	viper.Set("client_secret", "test_secret")
 }
 
 func TestNewCloseCreateCmd(t *testing.T) {
