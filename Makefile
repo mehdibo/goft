@@ -29,7 +29,7 @@ re: fclean all
 
 .PHONY: test
 test:
-	go test -v ./cmd/... ./pkg/...
+	GOFT_CLIENT_ID=test GOFT_CLIENT_SECRET=test go test -v ./cmd/... ./pkg/...
 
 .PHONY: lint
 lint: vendor
