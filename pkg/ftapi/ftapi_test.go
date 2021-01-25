@@ -285,7 +285,7 @@ func TestGetUserByLogin(t *testing.T) {
 	assert.Equal(t, "mehdi@1337.ma", user.Email)
 	assert.Equal(t, "Mehdi", user.FirstName)
 	assert.Equal(t, "Bounya", user.LastName)
-	assert.Equal(t, "spoofy", user.UsualFirstName)
+	assert.Equal(t, "", user.UsualFirstName)
 	assert.Equal(t, "hidden", user.Phone)
 	assert.True(t, user.IsStaff)
 	assert.Equal(t, "https://api.intra.42.fr/v2/users/spoody", user.URL)
