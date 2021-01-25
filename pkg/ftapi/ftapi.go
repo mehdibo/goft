@@ -83,7 +83,7 @@ func (ft *API) do(req *http.Request) (*http.Response, error)  {
 	}
 }
 
-func parseJson(body io.ReadCloser, target interface{}) error {
+func parseJSON(body io.ReadCloser, target interface{}) error {
 	return json.NewDecoder(body).Decode(target)
 }
 
@@ -230,7 +230,7 @@ func (ft *API) GetUserByLogin(login string) (*User, error)  {
 		}
 	}
 	var user User
-	err = parseJson(resp.Body, &user)
+	err = parseJSON(resp.Body, &user)
 	if err != nil {
 		return nil, err
 	}
