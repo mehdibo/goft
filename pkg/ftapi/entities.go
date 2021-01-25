@@ -2,6 +2,30 @@ package ftapi
 
 import "time"
 
+type language struct {
+	ID int `json:"id,omitempty"`
+	Name string `json:"name,omitempty"`
+	ISOIdentifier string `json:"identifier,omitempty"`
+	CreatedAt time.Time `json:"created_at,omitempty"`
+	UpdatedAt time.Time `json:"updated_at,omitempty"`
+}
+
+type campus struct {
+	ID int `json:"id,omitempty"`
+	Name string `json:"name,omitempty"`
+	TimeZone string `json:"time_zone,omitempty"`
+	Language *language `json:"language,omitempty"`
+	UsersCount int `json:"users_count,omitempty"`
+	VogsphereID int `json:"vogsphere_id,omitempty"`
+}
+
+type campusUser struct {
+	ID int `json:"id,omitempty"`
+	UserID int `json:"user_id,omitempty"`
+	CampusID int `json:"campus_id,omitempty"`
+	IsPrimary bool `json:"is_primary,omitempty"`
+}
+
 // User represents a user entity
 type User struct {
 	ID int `json:"id,omitempty"`
@@ -18,6 +42,8 @@ type User struct {
 	URL string `json:"url,omitempty"`
 	PoolMonth string `json:"pool_month,omitempty"`
 	PoolYear string `json:"pool_year,omitempty"`
+	Campuses []*campus `json:"campus,omitempty"`
+	CampusUsers []*campusUser `json:"campus_users,omitempty"`
 }
 
 type communityService struct {
