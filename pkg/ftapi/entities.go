@@ -12,6 +12,31 @@ type language struct {
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 }
 
+type cursus struct {
+	ID int `json:"id,omitempty"`
+	CreatedAt time.Time `json:"created_at,omitempty"`
+	Name string `json:"name,omitempty"`
+	Slug string `json:"slug,omitempty"`
+}
+
+type skill struct {
+	ID int `json:"id,omitempty"`
+	Name string `json:"name,omitempty"`
+	Level float32 `json:"level,omitempty"`
+}
+
+type cursusUser struct {
+	ID int `json:"id,omitempty"`
+	Grade string `json:"grade,omitempty"`
+	Level float32 `json:"level,omitempty"`
+	Skills []*skill `json:"skills,omitempty"`
+	BlackholedAt *time.Time `json:"blackholed_at,omitempty"`
+	BeginAt *time.Time `json:"begin_at,omitempty"`
+	EndAt *time.Time `json:"end_at,omitempty"`
+	HasCoalition bool `json:"has_coalition,omitempty"`
+	Cursus *cursus `json:"cursus,omitempty"`
+}
+
 // Campus represents a campus entity
 type Campus struct {
 	ID int `json:"id,omitempty"`
@@ -27,6 +52,12 @@ type campusUser struct {
 	UserID int `json:"user_id,omitempty"`
 	CampusID int `json:"campus_id,omitempty"`
 	IsPrimary bool `json:"is_primary,omitempty"`
+}
+
+type role struct {
+	ID int `json:"id,omitempty"`
+	Name string `json:"name,omitempty"`
+
 }
 
 // User represents a user entity
@@ -47,6 +78,7 @@ type User struct {
 	PoolYear string `json:"pool_year,omitempty"`
 	Campuses []*Campus `json:"campus,omitempty"`
 	CampusUsers []*campusUser `json:"campus_users,omitempty"`
+	Roles []*role `json:"role,omitempty"`
 }
 
 // GetPrimaryCampus returns the user's primary campus or nil if none found
