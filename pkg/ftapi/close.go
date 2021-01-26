@@ -1,8 +1,6 @@
 package ftapi
 
-import (
-	"time"
-)
+import "time"
 
 type communityService struct {
 	ID int `json:"id,omitempty"`
