@@ -52,7 +52,6 @@ type User struct {
 	ImageURL string `json:"image_url,omitempty"`
 	IsStaff bool `json:"staff?,omitempty"`
 	Kind string `json:"kind,omitempty"`
-	CampusID int `json:"campus_id,omitempty"`
 	URL string `json:"url,omitempty"`
 	PoolMonth string `json:"pool_month,omitempty"`
 	PoolYear string `json:"pool_year,omitempty"`
