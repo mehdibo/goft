@@ -39,13 +39,13 @@ func (m *mockAPI) CreateUser(user *ftapi.User, campusID int) error {
 		assert.Equal(m.t, "Mehdi", user.FirstName)
 		assert.Equal(m.t, "Bounya", user.LastName)
 		assert.Equal(m.t, "admin", user.Kind)
-		assert.Equal(m.t, 21, campusId)
+		assert.Equal(m.t, 21, campusID)
 	} else if user.Email == "spoody@without.login" {
 		assert.Equal(m.t, "", user.Login)
 		assert.Equal(m.t, "Mehdi", user.FirstName)
 		assert.Equal(m.t, "Bounya", user.LastName)
 		assert.Equal(m.t, "admin", user.Kind)
-		assert.Equal(m.t, 21, campusId)
+		assert.Equal(m.t, 21, campusID)
 	} else {
 		m.t.Fatal("Reached else statement in CreateUser")
 	}
