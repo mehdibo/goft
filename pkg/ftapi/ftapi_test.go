@@ -311,4 +311,8 @@ func TestGetUserByLogin(t *testing.T) {
 	assert.Equal(t, 21, user.CampusUsers[0].CampusID)
 	assert.True(t, user.CampusUsers[0].IsPrimary)
 
+	primaryCampus := user.GetPrimaryCampus()
+	assert.NotNil(t, primaryCampus)
+	assert.Equal(t, user.Campuses[0], primaryCampus)
+
 }
