@@ -22,7 +22,7 @@ type APIInterface interface {
 	PostJSON(url string, data interface{}) (resp *http.Response, err error)
 	Patch(url string, contentType string, body io.Reader) (resp *http.Response, err error)
 	PatchJSON(url string, data interface{}) (resp *http.Response, err error)
-	CreateUser(user *User, campusId int) error
+	CreateUser(user *User, campusID int) error
 	SetUserImage(login string, img *os.File) error
 	CreateClose(close *Close) error
 	GetUserByLogin(login string) (*User, error)
@@ -136,7 +136,7 @@ func (ft *API) PostJSON(url string, data interface{}) (resp *http.Response, err 
 
 // CreateUser creates a new user and sets `user` id and url to the one returned by the API
 // Following fields are required: login, email, first_name, last_name, kind
-func (ft *API) CreateUser(user *User, campusId int) error  {
+func (ft *API) CreateUser(user *User, campusID int) error  {
 	// Prepare payload format
 	payload := map[string]map[string]interface{}{
 		"user": {
@@ -145,7 +145,7 @@ func (ft *API) CreateUser(user *User, campusId int) error  {
 			"first_name": user.FirstName,
 			"last_name": user.LastName,
 			"kind": user.Kind,
-			"campus_id": campusId,
+			"campus_id": campusID,
 		},
 	}
 	resp, err := ft.PostJSON("/users", payload)
