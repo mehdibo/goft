@@ -33,19 +33,19 @@ func (m *mockAPI) PatchJSON(url string, data interface{}) (resp *http.Response, 
 func (m *mockAPI) SetUserImage(login string, img *os.File) error {
 	return nil
 }
-func (m *mockAPI) CreateUser(user *ftapi.User) error {
+func (m *mockAPI) CreateUser(user *ftapi.User, campusID int) error {
 	if user.Email == "spoody@with.login" {
 		assert.Equal(m.t, "spoody", user.Login)
 		assert.Equal(m.t, "Mehdi", user.FirstName)
 		assert.Equal(m.t, "Bounya", user.LastName)
 		assert.Equal(m.t, "admin", user.Kind)
-		assert.Equal(m.t, 21, user.CampusID)
+		assert.Equal(m.t, 21, campusId)
 	} else if user.Email == "spoody@without.login" {
 		assert.Equal(m.t, "", user.Login)
 		assert.Equal(m.t, "Mehdi", user.FirstName)
 		assert.Equal(m.t, "Bounya", user.LastName)
 		assert.Equal(m.t, "admin", user.Kind)
-		assert.Equal(m.t, 21, user.CampusID)
+		assert.Equal(m.t, 21, campusId)
 	} else {
 		m.t.Fatal("Reached else statement in CreateUser")
 	}
@@ -54,6 +54,9 @@ func (m *mockAPI) CreateUser(user *ftapi.User) error {
 }
 func (m *mockAPI) CreateClose(close *ftapi.Close) error {
 	return nil
+}
+func (m *mockAPI) GetUserByLogin(login string) (*ftapi.User, error) {
+	return nil, nil
 }
 
 func TestNewUserCreateCmd(t *testing.T) {

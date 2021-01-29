@@ -22,9 +22,10 @@ type APIInterface interface {
 	PostJSON(url string, data interface{}) (resp *http.Response, err error)
 	Patch(url string, contentType string, body io.Reader) (resp *http.Response, err error)
 	PatchJSON(url string, data interface{}) (resp *http.Response, err error)
-	CreateUser(user *User) error
+	CreateUser(user *User, campusID int) error
 	SetUserImage(login string, img *os.File) error
 	CreateClose(close *Close) error
+	GetUserByLogin(login string) (*User, error)
 }
 
 // API This is a struct to send authenticated requests to the 42 API
@@ -82,6 +83,10 @@ func (ft *API) do(req *http.Request) (*http.Response, error)  {
 	}
 }
 
+func parseJSON(body io.ReadCloser, target interface{}) error {
+	return json.NewDecoder(body).Decode(target)
+}
+
 // Get sends a get request to the given URL
 func (ft *API) Get(url string) (*http.Response, error) {
 	req, err := http.NewRequest("GET", ft.apiEndpoint+url, nil)
@@ -130,9 +135,18 @@ func (ft *API) PostJSON(url string, data interface{}) (resp *http.Response, err 
 // TODO: better handle errors
 
 // CreateUser creates a new user and sets `user` id and url to the one returned by the API
-func (ft *API) CreateUser(user *User) error  {
-	payload := map[string]User{
-		"user": *user,
+// Following fields are required: login, email, first_name, last_name, kind
+func (ft *API) CreateUser(user *User, campusID int) error  {
+	// Prepare payload format
+	payload := map[string]map[string]interface{}{
+		"user": {
+			"login": user.Login,
+			"email": user.Email,
+			"first_name": user.FirstName,
+			"last_name": user.LastName,
+			"kind": user.Kind,
+			"campus_id": campusID,
+		},
 	}
 	resp, err := ft.PostJSON("/users", payload)
 	if err != nil {
@@ -207,4 +221,27 @@ func (ft *API) CreateClose(close *Close) error  {
 	default:
 		return errors.New("failed creating close")
 	}
+}
+
+// GetUserByLogin gets a user by the provided login
+func (ft *API) GetUserByLogin(login string) (*User, error)  {
+	resp, err := ft.Get("/users/"+login)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		switch resp.StatusCode {
+		case http.StatusNotFound:
+			return nil, errors.New("user not found")
+		default:
+			return nil, errors.New("failed getting user")
+		}
+	}
+	var user User
+	err = parseJSON(resp.Body, &user)
+	if err != nil {
+		return nil, err
+	}
+	return &user, nil
 }
