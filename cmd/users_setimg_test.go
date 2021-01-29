@@ -40,7 +40,7 @@ func (m *setImgMockAPI) SetUserImage(login string, img *os.File) error {
 	assert.Equal(m.t, int64(99412), stat.Size())
 	return nil
 }
-func (m *setImgMockAPI) CreateUser(user *ftapi.User) error {
+func (m *setImgMockAPI) CreateUser(user *ftapi.User, campusId int) error {
 	return nil
 }
 func (m *setImgMockAPI) CreateClose(close *ftapi.Close) error {

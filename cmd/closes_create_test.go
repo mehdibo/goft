@@ -33,7 +33,7 @@ func (m *createCloseMockAPI) PatchJSON(url string, data interface{}) (resp *http
 func (m *createCloseMockAPI) SetUserImage(login string, img *os.File) error {
 	return nil
 }
-func (m *createCloseMockAPI) CreateUser(user *ftapi.User) error {
+func (m *createCloseMockAPI) CreateUser(user *ftapi.User, campusId int) error {
 	return nil
 }
 func (m *createCloseMockAPI) CreateClose(close *ftapi.Close) error {
