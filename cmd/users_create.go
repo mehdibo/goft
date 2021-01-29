@@ -38,13 +38,12 @@ kind must be either admin, student or external.`,
 				FirstName: args[1],
 				LastName:  args[2],
 				Kind:      args[3],
-				CampusID:  campusID,
 			}
 			login, _ := cmd.Flags().GetString("login")
 			if login != "" {
 				user.Login = login
 			}
-			err := (*api).CreateUser(&user)
+			err := (*api).CreateUser(&user, campusID)
 			if err != nil {
 				return err
 			}
