@@ -339,7 +339,7 @@ func (ft *API) RemoveCorrectionPoints(login string, points uint, reason string) 
 		"reason": reason,
 		"amount": points,
 	}
-	resp, err := ft.PostJSON("/users/"+login+"/correction_points/remove", payload)
+	resp, err := ft.DeleteJSON("/users/"+login+"/correction_points/remove", payload)
 	if err != nil {
 		return err
 	}
