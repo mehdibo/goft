@@ -70,7 +70,10 @@ func (m *usersGetMockAPI) GetUserByLogin(login string) (*ftapi.User, error) {
 func (m *usersGetMockAPI) UpdateUser(login string, data *ftapi.User) error  {
 	return nil
 }
-func (m *usersGetMockAPI) AddCorrectionPoints(login string, point uint, reason string) error{
+func (m *usersGetMockAPI) AddCorrectionPoints(login string, points uint, reason string) error{
+	return nil
+}
+func (m *usersGetMockAPI) RemoveCorrectionPoints(login string, points uint, reason string) error{
 	return nil
 }
 

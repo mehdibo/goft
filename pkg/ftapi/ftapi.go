@@ -7,6 +7,7 @@ import (
 	"errors"
 	"golang.org/x/oauth2/clientcredentials"
 	"io"
+	"io/ioutil"
 	"mime/multipart"
 	"net/http"
 	"os"
@@ -28,6 +29,7 @@ type APIInterface interface {
 	GetUserByLogin(login string) (*User, error)
 	UpdateUser(login string, data *User) error
 	AddCorrectionPoints(login string, points uint, reason string) error
+	RemoveCorrectionPoints(login string, points uint, reason string) error
 }
 
 // API This is a struct to send authenticated requests to the 42 API
@@ -85,6 +87,15 @@ func (ft *API) do(req *http.Request) (*http.Response, error)  {
 	}
 }
 
+// Meant for debugging purposes
+func readBody(body io.ReadCloser) (string, error) {
+	data, err := ioutil.ReadAll(body)
+	if err != nil {
+		return "", err
+	}
+	return string(data), nil
+}
+
 func parseJSON(body io.ReadCloser, target interface{}) error {
 	return json.NewDecoder(body).Decode(target)
 }
@@ -116,6 +127,15 @@ func (ft *API) Patch(url string, contentType string, body io.Reader) (resp *http
 	return ft.do(req)
 }
 
+// Delete sends a DELETE request to the given url
+func (ft *API) Delete(url string, contentType string, body io.Reader) (resp *http.Response, err error) {
+	req, err := ft.newRequest("DELETE", contentType, ft.apiEndpoint+url, body)
+	if err != nil {
+		return nil, err
+	}
+	return ft.do(req)
+}
+
 // PatchJSON this method will automatically turn data into a json and send a PATCH request to the given url
 func (ft *API) PatchJSON(url string, data interface{}) (resp *http.Response, err error) {
 	jsonData, err := json.Marshal(data)
@@ -132,6 +152,15 @@ func (ft *API) PostJSON(url string, data interface{}) (resp *http.Response, err 
 		return nil, err
 	}
 	return ft.Post(url, "application/json", bytes.NewReader(jsonData))
+}
+
+// DeleteJSON this method will automatically turn data into a json and send a post request to the given url
+func (ft *API) DeleteJSON(url string, data interface{}) (resp *http.Response, err error) {
+	jsonData, err := json.Marshal(data)
+	if err != nil {
+		return nil, err
+	}
+	return ft.Delete(url, "application/json", bytes.NewReader(jsonData))
 }
 
 // TODO: better handle errors
@@ -290,6 +319,27 @@ func (ft *API) AddCorrectionPoints(login string, points uint, reason string) err
 		"amount": points,
 	}
 	resp, err := ft.PostJSON("/users/"+login+"/correction_points/add", payload)
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode != http.StatusOK {
+		switch resp.StatusCode {
+		case http.StatusNotFound:
+			return errors.New("user not found")
+		default:
+			return errors.New("failed adding correction points")
+		}
+	}
+	return nil
+}
+
+// RemoveCorrectionPoints remove correction points from the provided user
+func (ft *API) RemoveCorrectionPoints(login string, points uint, reason string) error {
+	payload := map[string]interface{}{
+		"reason": reason,
+		"amount": points,
+	}
+	resp, err := ft.DeleteJSON("/users/"+login+"/correction_points/remove", payload)
 	if err != nil {
 		return err
 	}

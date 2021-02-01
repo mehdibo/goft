@@ -52,7 +52,10 @@ func (m *setImgMockAPI) GetUserByLogin(login string) (*ftapi.User, error) {
 func (m *setImgMockAPI) UpdateUser(login string, data *ftapi.User) error  {
 	return nil
 }
-func (m *setImgMockAPI) AddCorrectionPoints(login string, point uint, reason string) error{
+func (m *setImgMockAPI) AddCorrectionPoints(login string, points uint, reason string) error{
+	return nil
+}
+func (m *setImgMockAPI) RemoveCorrectionPoints(login string, points uint, reason string) error{
 	return nil
 }
 

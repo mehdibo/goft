@@ -51,9 +51,12 @@ func (m *addPointsMockAPI) AddCorrectionPoints(login string, points uint, reason
 	assert.Equal(m.t, "Testing purposes", reason)
 	return nil
 }
+func (m *addPointsMockAPI) RemoveCorrectionPoints(login string, points uint, reason string) error{
+	return nil
+}
 
 func TestNewAddPointsCmd(t *testing.T) {
-	var api ftapi.APIInterface = &mockAPI{t: t}
+	var api ftapi.APIInterface = &addPointsMockAPI{t: t}
 	addPointsCmd := NewAddPointsCmd(&api)
 	assert.IsType(t, &cobra.Command{}, addPointsCmd)
 }
