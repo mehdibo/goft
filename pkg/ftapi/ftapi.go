@@ -7,6 +7,7 @@ import (
 	"errors"
 	"golang.org/x/oauth2/clientcredentials"
 	"io"
+	"io/ioutil"
 	"mime/multipart"
 	"net/http"
 	"os"
@@ -84,6 +85,15 @@ func (ft *API) do(req *http.Request) (*http.Response, error)  {
 		}
 		return resp,err
 	}
+}
+
+// Meant for debugging purposes
+func readBody(body io.ReadCloser) (string, error) {
+	data, err := ioutil.ReadAll(body)
+	if err != nil {
+		return "", err
+	}
+	return string(data), nil
 }
 
 func parseJSON(body io.ReadCloser, target interface{}) error {
