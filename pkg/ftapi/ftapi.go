@@ -26,6 +26,7 @@ type APIInterface interface {
 	SetUserImage(login string, img *os.File) error
 	CreateClose(close *Close) error
 	GetUserByLogin(login string) (*User, error)
+	UpdateUser(login string, data *User) error
 }
 
 // API This is a struct to send authenticated requests to the 42 API
@@ -244,4 +245,39 @@ func (ft *API) GetUserByLogin(login string) (*User, error)  {
 		return nil, err
 	}
 	return &user, nil
+}
+
+// UpdateUser update a user's data
+func (ft *API) UpdateUser(login string, data *User) error {
+	payload := map[string]map[string]interface{}{
+		"user": {},
+	}
+	if data.Email != "" {
+		payload["user"]["email"] = data.Email
+	}
+	if data.FirstName != "" {
+		payload["user"]["first_name"] = data.FirstName
+	}
+	if data.LastName != "" {
+		payload["user"]["last_name"] = data.LastName
+	}
+	if data.Password != "" {
+		payload["user"]["password"] = data.Password
+	}
+	if data.Kind != "" {
+		payload["user"]["kind"] = data.Kind
+	}
+	resp, err := ft.PatchJSON("/users/"+login, payload)
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode != http.StatusNoContent {
+		switch resp.StatusCode {
+		case http.StatusNotFound:
+			return errors.New("user not found")
+		default:
+			return errors.New("failed updating data")
+		}
+	}
+	return nil
 }

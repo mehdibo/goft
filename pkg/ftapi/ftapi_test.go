@@ -316,3 +316,66 @@ func TestGetUserByLogin(t *testing.T) {
 	assert.Equal(t, user.Campuses[0], primaryCampus)
 
 }
+
+func TestUpdateUser(t *testing.T) {
+	testData := []map[string]interface{}{
+		{
+			"payload": &User{
+				Email: "spoody@local.test",
+				FirstName: "Spooder",
+				LastName: "Webz",
+				Password: "test",
+				Kind: "student",
+			},
+			"expected_payload": "{\"user\":{\"email\":\"spoody@local.test\",\"first_name\":\"Spooder\",\"kind\":\"student\",\"last_name\":\"Webz\",\"password\":\"test\"}}",
+		},
+		{
+			"payload": &User{
+				Email: "spoody@local.test",
+			},
+			"expected_payload": "{\"user\":{\"email\":\"spoody@local.test\"}}",
+		},
+		{
+			"payload": &User{
+				FirstName: "Spooder",
+			},
+			"expected_payload": "{\"user\":{\"first_name\":\"Spooder\"}}",
+		},
+		{
+			"payload": &User{
+				LastName: "Webz",
+			},
+			"expected_payload": "{\"user\":{\"last_name\":\"Webz\"}}",
+		},
+		{
+			"payload": &User{
+				Password: "test",
+			},
+			"expected_payload": "{\"user\":{\"password\":\"test\"}}",
+		},
+		{
+			"payload": &User{
+				Kind: "student",
+			},
+			"expected_payload": "{\"user\":{\"kind\":\"student\"}}",
+		},
+	}
+	for _, val := range testData {
+		server := httptest.NewServer(http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
+			assert.Equal(t, "PATCH", req.Method)
+			assert.Equal(t, "/users/spoody", req.URL.String())
+			assert.Equal(t, "application/json", req.Header.Get("Content-Type"))
+			assert.Equal(t,
+				val["expected_payload"],
+				getBody(req.Body),
+			)
+			rw.WriteHeader(http.StatusNoContent)
+			_, _ = rw.Write([]byte(""))
+		}))
+		ftAPI := New(server.URL, server.Client())
+		err := ftAPI.UpdateUser("spoody", val["payload"].(*User))
+		assert.Nil(t, err)
+		server.Close()
+	}
+
+}
