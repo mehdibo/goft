@@ -51,6 +51,7 @@ type User struct {
 	Phone string `json:"phone,omitempty"`
 	ImageURL string `json:"image_url,omitempty"`
 	IsStaff bool `json:"staff?,omitempty"`
+	CorrectionPoints int `json:"correction_point,omitempty"`
 	Kind string `json:"kind,omitempty"`
 	URL string `json:"url,omitempty"`
 	PoolMonth string `json:"pool_month,omitempty"`
