@@ -400,7 +400,7 @@ func TestAddCorrectionPoints(t *testing.T) {
 
 func TestRemoveCorrectionPoints(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
-		assert.Equal(t, "POST", req.Method)
+		assert.Equal(t, "DELETE", req.Method)
 		assert.Equal(t, "/users/spoody/correction_points/remove", req.URL.String())
 		assert.Equal(t, "application/json", req.Header.Get("Content-Type"))
 		assert.Equal(t,
