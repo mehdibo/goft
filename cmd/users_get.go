@@ -2,10 +2,40 @@ package cmd
 
 import (
 	"errors"
+	"fmt"
 	"goft/pkg/ftapi"
 
 	"github.com/spf13/cobra"
 )
+
+func formatText(user *ftapi.User) string {
+	output := fmt.Sprintf(`Id: %d
+Login: %s
+Email: %s
+First name: %s
+Last name: %s
+Phone: %s
+Image: %s
+Is staff: %t
+Pool Month/Year: %s/%s
+`,
+		user.ID,
+		user.Login,
+		user.Email,
+		user.FirstName,
+		user.LastName,
+		user.Phone,
+		user.ImageURL,
+		user.IsStaff,
+		user.PoolMonth,
+		user.PoolYear,
+	)
+	primaryCampus := user.GetPrimaryCampus()
+	if primaryCampus != nil {
+		output += fmt.Sprintf("Primary campus: %s\n", primaryCampus.Name)
+	}
+	return output
+}
 
 // NewGetUserCmd create the get user cmd
 func NewGetUserCmd(api *ftapi.APIInterface) *cobra.Command {
@@ -21,31 +51,7 @@ func NewGetUserCmd(api *ftapi.APIInterface) *cobra.Command {
 			if user == nil {
 				return errors.New("failed getting user")
 			}
-			primaryCampus := user.GetPrimaryCampus()
-			cmd.Printf(`Id: %d
-Login: %s
-Email: %s
-First name: %s
-Last name: %s
-Phone: %s
-Image: %s
-Is staff: %t
-Pool Month/Year: %s/%s
-`,
-				user.ID,
-				user.Login,
-				user.Email,
-				user.FirstName,
-				user.LastName,
-				user.Phone,
-				user.ImageURL,
-				user.IsStaff,
-				user.PoolMonth,
-				user.PoolYear,
-			)
-			if primaryCampus != nil {
-				cmd.Printf("Primary campus: %s\n", primaryCampus.Name)
-			}
+			cmd.Print(formatText(user))
 			return nil
 		},
 	}
