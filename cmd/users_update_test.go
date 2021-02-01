@@ -51,7 +51,10 @@ func (m *updateUserMockAPI) UpdateUser(login string, data *ftapi.User) error  {
 	assert.Equal(m.t, "new_password", data.Password)
 	return nil
 }
-func (m *updateUserMockAPI) AddCorrectionPoints(login string, point uint, reason string) error{
+func (m *updateUserMockAPI) AddCorrectionPoints(login string, points uint, reason string) error{
+	return nil
+}
+func (m *updateUserMockAPI) RemoveCorrectionPoints(login string, points uint, reason string) error{
 	return nil
 }
 

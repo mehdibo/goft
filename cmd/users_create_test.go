@@ -61,7 +61,10 @@ func (m *mockAPI) GetUserByLogin(login string) (*ftapi.User, error) {
 func (m *mockAPI) UpdateUser(login string, data *ftapi.User) error  {
 	return nil
 }
-func (m *mockAPI) AddCorrectionPoints(login string, point uint, reason string) error{
+func (m *mockAPI) AddCorrectionPoints(login string, points uint, reason string) error{
+	return nil
+}
+func (m *mockAPI) RemoveCorrectionPoints(login string, points uint, reason string) error{
 	return nil
 }
 

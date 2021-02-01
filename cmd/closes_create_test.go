@@ -43,10 +43,6 @@ func (m *createCloseMockAPI) CreateClose(close *ftapi.Close) error {
 	assert.Equal(m.t, 42, close.Closer.ID)
 	return nil
 }
-func (m *createCloseMockAPI) AddCorrectionPoints(login string, point uint, reason string) error{
-	return nil
-}
-
 func (m *createCloseMockAPI) GetUserByLogin(login string) (*ftapi.User, error) {
 	assert.Equal(m.t, "spoody", login)
 	return &ftapi.User{
@@ -54,6 +50,12 @@ func (m *createCloseMockAPI) GetUserByLogin(login string) (*ftapi.User, error) {
 	}, nil
 }
 func (m *createCloseMockAPI) UpdateUser(login string, data *ftapi.User) error  {
+	return nil
+}
+func (m *createCloseMockAPI) AddCorrectionPoints(login string, points uint, reason string) error{
+	return nil
+}
+func (m *createCloseMockAPI) RemoveCorrectionPoints(login string, points uint, reason string) error{
 	return nil
 }
 
