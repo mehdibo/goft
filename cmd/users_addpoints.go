@@ -8,6 +8,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// NewAddPointsCmd create the add points cmd
 func NewAddPointsCmd(api *ftapi.APIInterface) *cobra.Command {
 	return &cobra.Command{
 		Use:   "add-points login points reason",
