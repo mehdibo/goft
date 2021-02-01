@@ -127,6 +127,15 @@ func (ft *API) Patch(url string, contentType string, body io.Reader) (resp *http
 	return ft.do(req)
 }
 
+// Delete sends a DELETE request to the given url
+func (ft *API) Delete(url string, contentType string, body io.Reader) (resp *http.Response, err error) {
+	req, err := ft.newRequest("DELETE", contentType, ft.apiEndpoint+url, body)
+	if err != nil {
+		return nil, err
+	}
+	return ft.do(req)
+}
+
 // PatchJSON this method will automatically turn data into a json and send a PATCH request to the given url
 func (ft *API) PatchJSON(url string, data interface{}) (resp *http.Response, err error) {
 	jsonData, err := json.Marshal(data)
@@ -143,6 +152,15 @@ func (ft *API) PostJSON(url string, data interface{}) (resp *http.Response, err 
 		return nil, err
 	}
 	return ft.Post(url, "application/json", bytes.NewReader(jsonData))
+}
+
+// DeleteJSON this method will automatically turn data into a json and send a post request to the given url
+func (ft *API) DeleteJSON(url string, data interface{}) (resp *http.Response, err error) {
+	jsonData, err := json.Marshal(data)
+	if err != nil {
+		return nil, err
+	}
+	return ft.Delete(url, "application/json", bytes.NewReader(jsonData))
 }
 
 // TODO: better handle errors
