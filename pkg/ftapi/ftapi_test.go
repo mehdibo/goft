@@ -397,3 +397,21 @@ func TestAddCorrectionPoints(t *testing.T) {
 	err := ftAPI.AddCorrectionPoints("spoody", 5, "Testing")
 	assert.Nil(t, err)
 }
+
+func TestRemoveCorrectionPoints(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
+		assert.Equal(t, "POST", req.Method)
+		assert.Equal(t, "/users/spoody/correction_points/remove", req.URL.String())
+		assert.Equal(t, "application/json", req.Header.Get("Content-Type"))
+		assert.Equal(t,
+			"{\"amount\":5,\"reason\":\"Testing\"}",
+			getBody(req.Body),
+		)
+		rw.WriteHeader(http.StatusOK)
+		_, _ = rw.Write([]byte(""))
+	}))
+	defer server.Close()
+	ftAPI := New(server.URL, server.Client())
+	err := ftAPI.RemoveCorrectionPoints("spoody", 5, "Testing")
+	assert.Nil(t, err)
+}
