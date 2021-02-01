@@ -44,7 +44,10 @@ func (m *createCloseMockAPI) CreateClose(close *ftapi.Close) error {
 	return nil
 }
 func (m *createCloseMockAPI) GetUserByLogin(login string) (*ftapi.User, error) {
-	return nil, nil
+	assert.Equal(m.t, "spoody", login)
+	return &ftapi.User{
+		ID: 42,
+	}, nil
 }
 func (m *createCloseMockAPI) UpdateUser(login string, data *ftapi.User) error  {
 	return nil
@@ -63,7 +66,7 @@ func TestCreateClose(t *testing.T) {
 
 	testCmd := NewCloseCreateCmd(&api)
 
-	testCmd.SetArgs([]string{"spoody", "other", "Testing purposes", "42"})
+	testCmd.SetArgs([]string{"spoody", "other", "Testing purposes", "spoody"})
 	testCmd.SetOut(stdout)
 	testCmd.SetErr(stderr)
 	err := testCmd.Execute()
