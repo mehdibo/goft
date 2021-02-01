@@ -17,6 +17,7 @@ Last name: %s
 Phone: %s
 Image: %s
 Is staff: %t
+Correction points: %d
 Pool Month/Year: %s/%s
 `,
 		user.ID,
@@ -27,6 +28,7 @@ Pool Month/Year: %s/%s
 		user.Phone,
 		user.ImageURL,
 		user.IsStaff,
+		user.CorrectionPoints,
 		user.PoolMonth,
 		user.PoolYear,
 	)
