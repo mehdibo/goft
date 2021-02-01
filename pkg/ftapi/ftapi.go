@@ -28,6 +28,7 @@ type APIInterface interface {
 	GetUserByLogin(login string) (*User, error)
 	UpdateUser(login string, data *User) error
 	AddCorrectionPoints(login string, points uint, reason string) error
+	RemoveCorrectionPoints(login string, points uint, reason string) error
 }
 
 // API This is a struct to send authenticated requests to the 42 API
@@ -290,6 +291,27 @@ func (ft *API) AddCorrectionPoints(login string, points uint, reason string) err
 		"amount": points,
 	}
 	resp, err := ft.PostJSON("/users/"+login+"/correction_points/add", payload)
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode != http.StatusOK {
+		switch resp.StatusCode {
+		case http.StatusNotFound:
+			return errors.New("user not found")
+		default:
+			return errors.New("failed adding correction points")
+		}
+	}
+	return nil
+}
+
+// RemoveCorrectionPoints remove correction points from the provided user
+func (ft *API) RemoveCorrectionPoints(login string, points uint, reason string) error {
+	payload := map[string]interface{}{
+		"reason": reason,
+		"amount": points,
+	}
+	resp, err := ft.PostJSON("/users/"+login+"/correction_points/remove", payload)
 	if err != nil {
 		return err
 	}
