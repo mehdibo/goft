@@ -56,7 +56,7 @@ func NewUpdateUserCmd(api *ftapi.APIInterface) *cobra.Command {
 			if err != nil {
 				return err
 			}
-			_, _ = fmt.Fprint(cmd.OutOrStdout(), "User updated\n")
+			cmd.Println("User updated")
 			return nil
 		},
 	}

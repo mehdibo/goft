@@ -47,7 +47,7 @@ kind must be either admin, student or external.`,
 			if err != nil {
 				return err
 			}
-			_, _ = fmt.Fprint(cmd.OutOrStdout(), "User created\n")
+			cmd.Println("User created")
 			return nil
 		},
 	}

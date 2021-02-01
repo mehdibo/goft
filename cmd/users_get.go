@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"errors"
-	"fmt"
 	"goft/pkg/ftapi"
 
 	"github.com/spf13/cobra"
@@ -23,7 +22,7 @@ func NewGetUserCmd(api *ftapi.APIInterface) *cobra.Command {
 				return errors.New("failed getting user")
 			}
 			primaryCampus := user.GetPrimaryCampus()
-			_, _ = fmt.Fprintf(cmd.OutOrStdout(), `Id: %d
+			cmd.Printf(`Id: %d
 Login: %s
 Email: %s
 First name: %s
@@ -45,7 +44,7 @@ Pool Month/Year: %s/%s
 				user.PoolYear,
 			)
 			if primaryCampus != nil {
-				_, _ = fmt.Fprintf(cmd.OutOrStdout(), "Primary campus: %s\n", primaryCampus.Name)
+				cmd.Printf("Primary campus: %s\n", primaryCampus.Name)
 			}
 			return nil
 		},
