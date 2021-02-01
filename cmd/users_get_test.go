@@ -67,6 +67,9 @@ func (m *usersGetMockAPI) GetUserByLogin(login string) (*ftapi.User, error) {
 		CursusUsers:    nil,
 	}, nil
 }
+func (m *usersGetMockAPI) UpdateUser(login string, data *ftapi.User) error  {
+	return nil
+}
 
 func TestNewGetUserCmd(t *testing.T) {
 	var api ftapi.APIInterface = &usersGetMockAPI{t: t}
