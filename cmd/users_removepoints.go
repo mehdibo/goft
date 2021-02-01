@@ -8,7 +8,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// removePointsCmd represents the removePoints command
+// NewRemovePointsCmd create remove points command
 func NewRemovePointsCmd(api *ftapi.APIInterface) *cobra.Command {
 	return &cobra.Command{
 		Use:   "remove-points login points reason",
