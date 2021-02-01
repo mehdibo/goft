@@ -70,6 +70,9 @@ func (m *usersGetMockAPI) GetUserByLogin(login string) (*ftapi.User, error) {
 func (m *usersGetMockAPI) UpdateUser(login string, data *ftapi.User) error  {
 	return nil
 }
+func (m *usersGetMockAPI) AddCorrectionPoints(login string, point uint, reason string) error{
+	return nil
+}
 
 func TestNewGetUserCmd(t *testing.T) {
 	var api ftapi.APIInterface = &usersGetMockAPI{t: t}
