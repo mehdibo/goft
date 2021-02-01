@@ -16,8 +16,7 @@ func NewUpdateUserCmd(api *ftapi.APIInterface) *cobra.Command {
 		Short: "Update a user's data",
 		Long: "This command requires the Advanced tutor role",
 		Args: func(cmd *cobra.Command, args []string) error {
-			exactArgs := cobra.ExactArgs(1)
-			if err := exactArgs(cmd, args); err != nil {
+			if err := cobra.ExactArgs(1)(cmd, args); err != nil {
 				return err
 			}
 			kind, _ := cmd.LocalFlags().GetString("kind")

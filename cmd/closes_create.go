@@ -31,8 +31,8 @@ func NewCloseCreateCmd(api *ftapi.APIInterface) *cobra.Command {
 
 kind must be one of the following options: agu, black_hole, deserter, non_admitted, serious_misconduct, social_security or other`,
 		Args: func(cmd *cobra.Command, args []string) error {
-			if len(args) != 4 {
-				return fmt.Errorf("accepts 3 arg(s), received %d", len(args))
+			if err := cobra.ExactArgs(4)(cmd, args); err != nil {
+				return err
 			}
 			if !isValidKind(args[1]) {
 				return fmt.Errorf("'%s' is not a valid kind", args[1])

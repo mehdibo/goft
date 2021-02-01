@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"errors"
-	"fmt"
 	"github.com/spf13/cobra"
 	"goft/pkg/ftapi"
 	"os"
@@ -17,8 +16,8 @@ func NewSetImgCmd(api *ftapi.APIInterface) *cobra.Command {
 Image file must be 3Kb and 1Mb
 `,
 		Args: func(cmd *cobra.Command, args []string) error {
-			if len(args) != 2 {
-				return fmt.Errorf("accepts 2 arg(s), received %d", len(args))
+			if err := cobra.ExactArgs(2)(cmd, args); err != nil {
+				return err
 			}
 			const minImgLen = 3072
 			const maxImgLen = 1048576

@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"errors"
-	"fmt"
 	"goft/pkg/ftapi"
 	"strconv"
 
@@ -19,8 +18,8 @@ No password is set, the user should reset his password using the web interface.
 
 kind must be either admin, student or external.`,
 		Args: func(cmd *cobra.Command, args []string) error {
-			if len(args) != 5 {
-				return fmt.Errorf("accepts 5 arg(s), received %d", len(args))
+			if err := cobra.ExactArgs(5)(cmd, args); err != nil {
+				return err
 			}
 			if args[3] != "admin" && args[3] != "student" && args[3] != "external" {
 				return errors.New("kind must be admin, student or external")
