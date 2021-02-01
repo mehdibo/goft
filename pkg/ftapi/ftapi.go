@@ -10,9 +10,11 @@ import (
 	"io/ioutil"
 	"mime/multipart"
 	"net/http"
+	"net/url"
 	"os"
 	"path/filepath"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -30,6 +32,7 @@ type APIInterface interface {
 	UpdateUser(login string, data *User) error
 	AddCorrectionPoints(login string, points uint, reason string) error
 	RemoveCorrectionPoints(login string, points uint, reason string) error
+	GetUsers(page int, filters *map[string]string, sort *map[string]string) ([]*User, error)
 }
 
 // API This is a struct to send authenticated requests to the 42 API
@@ -352,4 +355,52 @@ func (ft *API) RemoveCorrectionPoints(login string, points uint, reason string) 
 		}
 	}
 	return nil
+}
+
+// GetUsers get an array of users
+// filter must be a map of field_name => values (values can be separated by a comma)
+// sort must be a map of field_name => asc or desc
+func (ft *API) GetUsers(page int, filters *map[string]string, sort *map[string]string) ([]*User, error) {
+	var users []*User
+	endpoint := url.URL{
+		Path: "/users",
+	}
+	query := endpoint.Query()
+	query.Add("page", strconv.Itoa(page))
+
+	if filters != nil {
+		for key, val := range *filters {
+			query.Add("filter["+key+"]", val)
+		}
+	}
+
+	if sort != nil {
+		sortQuery := ""
+		for key, val := range *sort {
+			if val == "desc" {
+				sortQuery += "-"
+			}
+			sortQuery += key+","
+		}
+		query.Add("sort", strings.Trim(sortQuery, ","))
+	}
+
+	endpoint.RawQuery = query.Encode()
+	resp, err := ft.Get(endpoint.String())
+	if err != nil {
+		return nil, err
+	}
+	if resp.StatusCode != http.StatusOK {
+		switch resp.StatusCode {
+		case http.StatusNotFound:
+			return nil, errors.New("users not found")
+		default:
+			return nil, errors.New("failed listing users")
+		}
+	}
+	err = parseJSON(resp.Body, &users)
+	if err != nil {
+		return nil, err
+	}
+	return users, nil
 }
