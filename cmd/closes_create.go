@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"goft/pkg/ftapi"
-	"strconv"
 )
 
 func isValidKind(kind string) bool {
@@ -26,7 +25,7 @@ func isValidKind(kind string) bool {
 func NewCloseCreateCmd(api *ftapi.APIInterface) *cobra.Command {
 	// login - kind - reason -
 	return &cobra.Command{
-		Use:   "create login kind reason closer_id", // TODO: Use login for closer instead
+		Use:   "create login kind reason closer_login",
 		Short: "Create a new close for a user",
 		Long: `This command requires the Basic staff role
 
@@ -38,15 +37,17 @@ kind must be one of the following options: agu, black_hole, deserter, non_admitt
 			if !isValidKind(args[1]) {
 				return fmt.Errorf("'%s' is not a valid kind", args[1])
 			}
-			closerID, err := strconv.Atoi(args[3])
-			if err != nil || closerID <= 0 {
-				return errors.New("invalid closer_id")
-			}
 			return nil
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
-			closerID, _ := strconv.Atoi(args[3])
-			err := (*api).CreateClose(&ftapi.Close{
+			closer, err := (*api).GetUserByLogin(args[3])
+			if err != nil {
+				return err
+			}
+			if closer == nil || closer.ID == 0 {
+				return errors.New("couldn't get closer")
+			}
+			err = (*api).CreateClose(&ftapi.Close{
 				Kind: args[1],
 				Reason: args[2],
 				CommunityServices: nil,
@@ -54,7 +55,7 @@ kind must be one of the following options: agu, black_hole, deserter, non_admitt
 					Login: args[0],
 				},
 				Closer: &ftapi.User{
-					ID: closerID,
+					ID: closer.ID,
 				},
 			})
 			return err
