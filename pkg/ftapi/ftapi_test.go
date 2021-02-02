@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"os"
 	"testing"
 )
@@ -414,4 +415,79 @@ func TestRemoveCorrectionPoints(t *testing.T) {
 	ftAPI := New(server.URL, server.Client())
 	err := ftAPI.RemoveCorrectionPoints("spoody", 5, "Testing")
 	assert.Nil(t, err)
+}
+
+func TestGetUsers(t *testing.T) {
+	testData := []map[string]interface{}{
+		{
+			"filters": &map[string]string{
+				"field_a": "field_a_value",
+				"field_b": "field_b_value",
+			},
+			"sort": &map[string]string{
+				"field_a": "desc",
+				"field_b": "asc",
+			},
+			"page": 1,
+			"expected_path": "/users",
+			"expected_query": "filter[field_a]=field_a_value&filter[field_b]=field_b_value&page=1&sort=-field_a,field_b",
+		},
+		{
+			"filters": &map[string]string{
+				"field_a": "field_a_value",
+				"field_b": "field_b_value",
+			},
+			"page": 2,
+			"sort": nil,
+			"expected_path": "/users",
+			"expected_query": "filter[field_a]=field_a_value&filter[field_b]=field_b_value&page=2",
+		},
+		{
+			"filters": nil,
+			"sort": &map[string]string{
+				"field_a": "desc",
+				"field_b": "asc",
+			},
+			"page": 90,
+			"expected_path": "/users",
+			"expected_query": "page=90&sort=-field_a,field_b",
+		},
+		{
+			"filters": nil,
+			"sort": nil,
+			"page": 90,
+			"expected_path": "/users",
+			"expected_query": "page=90",
+		},
+	}
+	for _, val := range testData {
+		server := httptest.NewServer(http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
+			assert.Equal(t, "GET", req.Method)
+			assert.Equal(t, val["expected_path"], req.URL.Path)
+			query, _ := url.QueryUnescape(req.URL.Query().Encode())
+			assert.Equal(t, val["expected_query"], query)
+			assert.Equal(t, "", req.Header.Get("Content-Type"))
+			assert.Equal(t, "", getBody(req.Body))
+			rw.WriteHeader(http.StatusOK)
+			_, _ = rw.Write([]byte("[{\"id\":126,\"login\":\"darthcae\",\"url\":\"https://api.intra.42.fr/v2/users/darthcae\"},{\"id\":125,\"login\":\"sebulseb\",\"url\":\"https://api.intra.42.fr/v2/users/sebulseb\"},{\"id\":124,\"login\":\"hsolo2\",\"url\":\"https://api.intra.42.fr/v2/users/hsolo2\"}]"))
+		}))
+		ftAPI := New(server.URL, server.Client())
+		page := val["page"].(int)
+		var filters *map[string]string = nil
+		var sort *map[string]string = nil
+		if val["filters"] != nil {
+			filters = val["filters"].(*map[string]string)
+		}
+		if val["sort"] != nil {
+			sort = val["sort"].(*map[string]string)
+		}
+		users, err := ftAPI.GetUsers(page, filters, sort)
+		assert.Nil(t, err)
+		assert.NotNil(t, users)
+		assert.Len(t, users, 3)
+		assert.Equal(t, 126, users[0].ID)
+		assert.Equal(t, 125, users[1].ID)
+		assert.Equal(t, 124, users[2].ID)
+		server.Close()
+	}
 }
