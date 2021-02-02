@@ -33,6 +33,7 @@ type APIInterface interface {
 	AddCorrectionPoints(login string, points uint, reason string) error
 	RemoveCorrectionPoints(login string, points uint, reason string) error
 	GetUsers(page int, filters *map[string]string, sort *map[string]string) ([]*User, error)
+	ExpandUsers(users []*User) error
 }
 
 // API This is a struct to send authenticated requests to the 42 API
@@ -403,4 +404,22 @@ func (ft *API) GetUsers(page int, filters *map[string]string, sort *map[string]s
 		return nil, err
 	}
 	return users, nil
+}
+
+// ExpandUsers loops through an array of users and get more details about them
+// returns the number of users that were expanded
+func (ft *API) ExpandUsers(users []*User) (int, error) {
+	count := 0
+	for i, user := range users {
+		expandedUser, err := ft.GetUserByLogin(user.Login)
+		if err != nil {
+			if err.Error() == "user not found" {
+				continue
+			}
+			return count, err
+		}
+		count++
+		users[i] = expandedUser
+	}
+	return count, nil
 }
