@@ -1,6 +1,9 @@
 package ftapi
 
-import "time"
+import (
+	"strings"
+	"time"
+)
 
 type cursus struct {
 	ID int `json:"id,omitempty"`
@@ -82,4 +85,8 @@ func (u *User) GetPrimaryCampus() *Campus {
 		}
 	}
 	return nil
+}
+
+func (u *User) IsAnonymized() bool {
+	return strings.HasPrefix(u.Login, "3b3-")
 }
