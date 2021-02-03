@@ -2,17 +2,16 @@ package cmd
 
 import (
 	"fmt"
-	"goft/pkg/ftapi"
-
 	"github.com/spf13/cobra"
+	"goft/pkg/ftapi"
 )
 
-// listUsersCmd represents the ls command
+// NewListUsersCmd create new list users cmd
 func NewListUsersCmd(api *ftapi.APIInterface) *cobra.Command {
 	cmd := cobra.Command{
 		Use:   "ls",
 		Short: "List users",
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			filters := map[string]string{
 				"primary_campus_id": "16",
 			}
@@ -20,8 +19,11 @@ func NewListUsersCmd(api *ftapi.APIInterface) *cobra.Command {
 				"id": "desc",
 			}
 			users, err := (*api).GetUsers(1, &filters, &sort)
-			fmt.Println(err)
+			if err != nil {
+				return err
+			}
 			fmt.Println(users)
+			return nil
 		},
 	}
 	return &cmd
