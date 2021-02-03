@@ -491,3 +491,40 @@ func TestGetUsers(t *testing.T) {
 		server.Close()
 	}
 }
+
+func TestExpandUsers(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
+		assert.Equal(t, "GET", req.Method)
+		assert.Equal(t, "/users/norminet", req.URL.String())
+		assert.Equal(t, "", req.Header.Get("Content-Type"))
+		assert.Equal(t, "", getBody(req.Body))
+		rw.WriteHeader(http.StatusOK)
+		_, _ = rw.Write([]byte("{\"id\":126,\"login\":\"darthcae\",\"url\":\"https://api.intra.42.fr/v2/users/darthcae\"}"))
+	}))
+	defer server.Close()
+	users := []*User{
+		{
+			ID:    1,
+			Login: "norminet",
+			URL:   "test_url",
+				},
+		{
+			ID:    2,
+			Login: "norminet",
+			URL:   "cat_cute",
+				},
+		{
+			ID:    3,
+			Login: "norminet",
+			URL:   "cute_cat",
+		},
+	}
+	ftAPI := New(server.URL, server.Client())
+	count, err := ftAPI.ExpandUsers(users)
+	assert.Nil(t, err)
+	assert.Len(t, users, 3)
+	assert.Equal(t, 126, users[0].ID)
+	assert.Equal(t, 126, users[1].ID)
+	assert.Equal(t, 126, users[2].ID)
+	assert.Equal(t, 3, count)
+}
