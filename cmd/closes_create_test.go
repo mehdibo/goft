@@ -58,6 +58,12 @@ func (m *createCloseMockAPI) AddCorrectionPoints(login string, points uint, reas
 func (m *createCloseMockAPI) RemoveCorrectionPoints(login string, points uint, reason string) error{
 	return nil
 }
+func (m *createCloseMockAPI) GetUsers(page int, filters *map[string]string, sort *map[string]string) ([]*ftapi.User, error) {
+	return nil, nil
+}
+func (m *createCloseMockAPI) ExpandUsers(users []*ftapi.User) (int, error) {
+	return 0, nil
+}
 
 func TestNewCloseCreateCmd(t *testing.T) {
 	var api ftapi.APIInterface = &createCloseMockAPI{t: t}

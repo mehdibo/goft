@@ -67,6 +67,12 @@ func (m *mockAPI) AddCorrectionPoints(login string, points uint, reason string) 
 func (m *mockAPI) RemoveCorrectionPoints(login string, points uint, reason string) error{
 	return nil
 }
+func (m *mockAPI) GetUsers(page int, filters *map[string]string, sort *map[string]string) ([]*ftapi.User, error) {
+	return nil, nil
+}
+func (m *mockAPI) ExpandUsers(users []*ftapi.User) (int, error) {
+	return 0, nil
+}
 
 func TestNewUserCreateCmd(t *testing.T) {
 	var api ftapi.APIInterface = &mockAPI{t: t}

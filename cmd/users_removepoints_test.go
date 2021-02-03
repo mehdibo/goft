@@ -54,6 +54,12 @@ func (m *removePointsMockAPI) RemoveCorrectionPoints(login string, points uint, 
 	assert.Equal(m.t, "Meow", reason)
 	return nil
 }
+func (m *removePointsMockAPI) GetUsers(page int, filters *map[string]string, sort *map[string]string) ([]*ftapi.User, error) {
+	return nil, nil
+}
+func (m *removePointsMockAPI) ExpandUsers(users []*ftapi.User) (int, error) {
+	return 0, nil
+}
 
 func TestNewRemovePointsCmd(t *testing.T) {
 	var api ftapi.APIInterface = &removePointsMockAPI{t: t}
