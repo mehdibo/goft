@@ -33,7 +33,7 @@ type APIInterface interface {
 	AddCorrectionPoints(login string, points uint, reason string) error
 	RemoveCorrectionPoints(login string, points uint, reason string) error
 	GetUsers(page int, filters *map[string]string, sort *map[string]string) ([]*User, error)
-	ExpandUsers(users []*User) error
+	ExpandUsers(users []*User) (int, error)
 }
 
 // API This is a struct to send authenticated requests to the 42 API
