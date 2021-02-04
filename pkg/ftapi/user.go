@@ -52,18 +52,18 @@ type User struct {
 	LastName string `json:"last_name,omitempty"`
 	UsualFirstName string `json:"usual_first_name,omitempty"`
 	Phone string `json:"phone,omitempty"`
-	ImageURL string `json:"image_url,omitempty"`
-	IsStaff bool `json:"staff?,omitempty"`
+	ImageURL string `json:"image_url,omitempty" csv:"-"`
+	IsStaff bool `json:"staff?,omitempty" csv:"-"`
 	CorrectionPoints int `json:"correction_point,omitempty"`
 	Kind string `json:"kind,omitempty"`
 	URL string `json:"url,omitempty"`
 	PoolMonth string `json:"pool_month,omitempty"`
 	PoolYear string `json:"pool_year,omitempty"`
-	Campuses []*Campus `json:"campus,omitempty"`
-	CampusUsers []*campusUser `json:"campus_users,omitempty"`
-	Roles []*role `json:"role,omitempty"`
-	CursusUsers []*cursusUser `json:"cursus_user,omitempty"`
-	Password string
+	Campuses []*Campus `json:"campus,omitempty" csv:"-"`
+	CampusUsers []*campusUser `json:"campus_users,omitempty" csv:"-"`
+	Roles []*role `json:"role,omitempty" csv:"-"`
+	CursusUsers []*cursusUser `json:"cursus_user,omitempty" csv:"-"`
+	Password string `csv:"-"`
 }
 
 // GetPrimaryCampus returns the user's primary campus or nil if none found
