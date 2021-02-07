@@ -87,6 +87,7 @@ func (u *User) GetPrimaryCampus() *Campus {
 	return nil
 }
 
+// TODO: what if a user has his login starting with 3b3-? (a staff member in a campus for example)
 // IsAnonymized returns true if a user is anonymized
 func (u *User) IsAnonymized() bool {
 	return strings.HasPrefix(u.Login, "3b3-")
