@@ -110,6 +110,10 @@ last_seen_at, password_changed_at
 			if err != nil {
 				return err
 			}
+			expandUsers, err := cmd.Flags().GetBool("detailed")
+			if err != nil {
+				return err
+			}
 			filters, err := getFilters(cmd.Flags())
 			if err != nil {
 				return err
@@ -145,6 +149,12 @@ last_seen_at, password_changed_at
 				}
 				users = filterNils(users)
 			}
+			if expandUsers {
+				_, err := (*api).ExpandUsers(users)
+				if err != nil {
+					return err
+				}
+			}
 			for _, user := range users {
 				fmt.Println(user)
 			}
@@ -157,6 +167,7 @@ last_seen_at, password_changed_at
 	cmd.Flags().Int("primary-campus", 0, "Filter by primary campus id")
 	cmd.Flags().StringArray("sort", nil, "Sort the users, format: field_name,asc|desc")
 	cmd.Flags().Bool("show-anonym", false, "Use to show anonymized users")
+	cmd.Flags().Bool("detailed", false, "Use to return more details about users, by default only ID and login are fetched")
 	return &cmd
 }
 var listUsersCmd = NewListUsersCmd(&API)
