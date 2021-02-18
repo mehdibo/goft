@@ -1,4 +1,4 @@
-module goft
+module github.com/mehdibo/goft
 
 go 1.15
 
