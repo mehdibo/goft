@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/spf13/cobra"
@@ -171,7 +172,11 @@ last_seen_at, password_changed_at
 			if outputFormat == "csv" {
 				output, err = gocsv.MarshalString(users)
 			} else if outputFormat == "json" {
-				fmt.Println("JSON")
+				tmp, err := json.Marshal(users)
+				if err != nil {
+					return err
+				}
+				output = string(tmp)
 			}
 			_, _ = fmt.Fprint(cmd.OutOrStdout(), output)
 			return nil
