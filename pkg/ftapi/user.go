@@ -56,7 +56,7 @@ type User struct {
 	IsStaff bool `json:"staff?,omitempty" csv:"-"`
 	CorrectionPoints int `json:"correction_point,omitempty"`
 	Kind string `json:"kind,omitempty"`
-	URL string `json:"url,omitempty"`
+	URL string `json:"url,omitempty" csv:"-"`
 	PoolMonth string `json:"pool_month,omitempty"`
 	PoolYear string `json:"pool_year,omitempty"`
 	Campuses []*Campus `json:"campus,omitempty" csv:"-"`
