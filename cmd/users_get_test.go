@@ -120,6 +120,7 @@ Last name: Webz
 Phone: +2126666666666
 Image: https://avatars.githubusercontent.com/u/5004111?s=460&u=a5eae6fc0bcdc8c087af14c2e476684daaeb2bbc&v=4
 Is staff: true
+Correction points: 0
 Pool Month/Year: April/2019
 `, string(out))
 }
