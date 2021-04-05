@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
+	"github.com/gocarina/gocsv"
 	"goft/pkg/ftapi"
 	"strconv"
 	"strings"
@@ -105,8 +106,19 @@ id, login, email, created_at, updated_at, first_name
 last_name, pool_year, pool_month, kind, slack_login
 last_seen_at, password_changed_at
 `,
+		Args: func(cmd *cobra.Command, args []string) error {
+			output, _ := cmd.Flags().GetString("output")
+			if output != "csv" && output != "json" {
+				return fmt.Errorf("Output must be either csv or json, '%s' given", output)
+			}
+			return nil
+		},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			showAnonym, err := cmd.Flags().GetBool("show-anonym")
+			if err != nil {
+				return err
+			}
+			outputFormat, err := cmd.Flags().GetString("output")
 			if err != nil {
 				return err
 			}
@@ -155,9 +167,13 @@ last_seen_at, password_changed_at
 					return err
 				}
 			}
-			for _, user := range users {
-				fmt.Println(user)
+			var output string
+			if outputFormat == "csv" {
+				output, err = gocsv.MarshalString(users)
+			} else if outputFormat == "json" {
+				fmt.Println("JSON")
 			}
+			_, _ = fmt.Fprint(cmd.OutOrStdout(), output)
 			return nil
 		},
 	}
@@ -168,6 +184,7 @@ last_seen_at, password_changed_at
 	cmd.Flags().StringArray("sort", nil, "Sort the users, format: field_name,asc|desc")
 	cmd.Flags().Bool("show-anonym", false, "Use to show anonymized users")
 	cmd.Flags().Bool("detailed", false, "Use to return more details about users, by default only ID and login are fetched")
+	cmd.Flags().String("output", "csv", "The output format, can be: csv,json")
 	return &cmd
 }
 var listUsersCmd = NewListUsersCmd(&API)
