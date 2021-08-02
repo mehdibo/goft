@@ -34,10 +34,10 @@ func NewRequestsPostCmd(api *ftapi.APIInterface) *cobra.Command {
 			if err != nil {
 				return err
 			}
-			var prettyJson bytes.Buffer
-			_ = json.Indent(&prettyJson, bodyBytes, "", "\t")
+			var prettyJSON bytes.Buffer
+			_ = json.Indent(&prettyJSON, bodyBytes, "", "\t")
 			_, _ = fmt.Fprintf(cmd.OutOrStdout(), "%s\n", resp.Status)
-			_, _ = fmt.Fprintf(cmd.OutOrStdout(), "%s\n", prettyJson.String())
+			_, _ = fmt.Fprintf(cmd.OutOrStdout(), "%s\n", prettyJSON.String())
 			return nil
 		},
 	}
