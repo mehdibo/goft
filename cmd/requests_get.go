@@ -9,7 +9,7 @@ import (
 	"io/ioutil"
 )
 
-// NewRequestsGetCmd Create the close create cmd
+// NewRequestsGetCmd Create the get request cmd
 func NewRequestsGetCmd(api *ftapi.APIInterface) *cobra.Command {
 	return &cobra.Command{
 		Use:   "get path",
