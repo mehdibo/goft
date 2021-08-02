@@ -85,6 +85,10 @@ Do not reply to this email, if you still have a problem use Slack to report it.
 			if err != nil {
 				return err
 			}
+			showPass, _ := cmd.Flags().GetBool("show-pass")
+			if showPass {
+				_, _ = fmt.Fprintf(cmd.OutOrStdout(), "New password is: %s\n", newPass)
+			}
 			return nil
 		},
 	}
@@ -93,6 +97,7 @@ Do not reply to this email, if you still have a problem use Slack to report it.
 	cmd.Flags().String("smtp-pass", "", "SMTP password")
 	cmd.Flags().String("smtp-host", "", "SMTP host")
 	cmd.Flags().Int("smtp-port", 25, "SMTP port")
+	cmd.Flags().Bool("show-pass", false, "Print the generated password")
 	_ = cmd.MarkFlagRequired("from-email")
 	_ = cmd.MarkFlagRequired("smtp-user")
 	_ = cmd.MarkFlagRequired("smtp-pass")
