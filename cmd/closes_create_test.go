@@ -18,6 +18,9 @@ type createCloseMockAPI struct {
 func (m *createCloseMockAPI) Get(url string) (*http.Response, error) {
 	return nil, nil
 }
+func (m *createCloseMockAPI) Delete(url string, contentType string, body io.Reader) (*http.Response, error) {
+	return nil, nil
+}
 func (m *createCloseMockAPI) Post(url string, contentType string, body io.Reader) (resp *http.Response, err error) {
 	return nil, nil
 }

@@ -18,6 +18,9 @@ type mockAPI struct {
 func (m *mockAPI) Get(url string) (*http.Response, error) {
 	return nil, nil
 }
+func (m *mockAPI) Delete(url string, contentType string, body io.Reader) (resp *http.Response, err error) {
+	return nil, nil
+}
 func (m *mockAPI) Post(url string, contentType string, body io.Reader) (resp *http.Response, err error) {
 	return nil, nil
 }

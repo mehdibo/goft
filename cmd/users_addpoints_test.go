@@ -18,6 +18,9 @@ type addPointsMockAPI struct {
 func (m *addPointsMockAPI) Get(url string) (*http.Response, error) {
 	return nil, nil
 }
+func (m *addPointsMockAPI) Delete(url string, contentType string, body io.Reader) (resp *http.Response, err error) {
+	return nil, nil
+}
 func (m *addPointsMockAPI) Post(url string, contentType string, body io.Reader) (resp *http.Response, err error) {
 	return nil, nil
 }

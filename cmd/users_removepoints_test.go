@@ -21,6 +21,9 @@ func (m *removePointsMockAPI) Get(url string) (*http.Response, error) {
 func (m *removePointsMockAPI) Post(url string, contentType string, body io.Reader) (resp *http.Response, err error) {
 	return nil, nil
 }
+func (m *removePointsMockAPI) Delete(url string, contentType string, body io.Reader) (resp *http.Response, err error) {
+	return nil, nil
+}
 func (m *removePointsMockAPI) PostJSON(url string, data interface{}) (resp *http.Response, err error) {
 	return nil, nil
 }

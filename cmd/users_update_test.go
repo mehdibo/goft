@@ -22,6 +22,9 @@ func (m *updateUserMockAPI) Get(url string) (*http.Response, error) {
 func (m *updateUserMockAPI) Post(url string, contentType string, body io.Reader) (resp *http.Response, err error) {
 	return nil, nil
 }
+func (m *updateUserMockAPI) Delete(url string, contentType string, body io.Reader) (resp *http.Response, err error) {
+	return nil, nil
+}
 func (m *updateUserMockAPI) PostJSON(url string, data interface{}) (resp *http.Response, err error) {
 	return nil, nil
 }

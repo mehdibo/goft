@@ -21,6 +21,9 @@ func (m *usersGetMockAPI) Get(url string) (*http.Response, error) {
 func (m *usersGetMockAPI) Post(url string, contentType string, body io.Reader) (resp *http.Response, err error) {
 	return nil, nil
 }
+func (m *usersGetMockAPI) Delete(url string, contentType string, body io.Reader) (resp *http.Response, err error) {
+	return nil, nil
+}
 func (m *usersGetMockAPI) PostJSON(url string, data interface{}) (resp *http.Response, err error) {
 	return nil, nil
 }
