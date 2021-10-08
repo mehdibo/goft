@@ -7,7 +7,6 @@ import (
 	"errors"
 	"golang.org/x/oauth2/clientcredentials"
 	"io"
-	"io/ioutil"
 	"mime/multipart"
 	"net/http"
 	"os"
