@@ -69,6 +69,7 @@ func (m *usersGetMockAPI) GetUserByLogin(login string) (*ftapi.User, error) {
 		Roles:          nil,
 		CursusUsers:    nil,
 		CorrectionPoints: 4,
+		Wallet: 1337,
 	}, nil
 }
 func (m *usersGetMockAPI) UpdateUser(login string, data *ftapi.User) error  {
@@ -119,6 +120,7 @@ Phone: +2126666666666
 Image: https://avatars.githubusercontent.com/u/5004111?s=460&u=a5eae6fc0bcdc8c087af14c2e476684daaeb2bbc&v=4
 Is staff: true
 Correction points: 4
+Wallet: 1337
 Pool Month/Year: April/2019
 `, string(out))
 }

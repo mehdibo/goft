@@ -61,6 +61,7 @@ type User struct {
 	Roles []*role `json:"role,omitempty"`
 	CursusUsers []*cursusUser `json:"cursus_user,omitempty"`
 	Password string
+	Wallet int `json:"wallet,omitempty"`
 }
 
 // GetPrimaryCampus returns the user's primary campus or nil if none found
