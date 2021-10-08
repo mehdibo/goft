@@ -88,15 +88,6 @@ func (ft *API) do(req *http.Request) (*http.Response, error)  {
 	}
 }
 
-// Meant for debugging purposes
-func readBody(body io.ReadCloser) (string, error) {
-	data, err := ioutil.ReadAll(body)
-	if err != nil {
-		return "", err
-	}
-	return string(data), nil
-}
-
 func parseJSON(body io.ReadCloser, target interface{}) error {
 	return json.NewDecoder(body).Decode(target)
 }
