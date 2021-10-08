@@ -21,6 +21,9 @@ func (m *usersGetMockAPI) Get(url string) (*http.Response, error) {
 func (m *usersGetMockAPI) Post(url string, contentType string, body io.Reader) (resp *http.Response, err error) {
 	return nil, nil
 }
+func (m *usersGetMockAPI) Delete(url string, contentType string, body io.Reader) (resp *http.Response, err error) {
+	return nil, nil
+}
 func (m *usersGetMockAPI) PostJSON(url string, data interface{}) (resp *http.Response, err error) {
 	return nil, nil
 }
@@ -65,6 +68,7 @@ func (m *usersGetMockAPI) GetUserByLogin(login string) (*ftapi.User, error) {
 		CampusUsers:    nil,
 		Roles:          nil,
 		CursusUsers:    nil,
+		CorrectionPoints: 4,
 	}, nil
 }
 func (m *usersGetMockAPI) UpdateUser(login string, data *ftapi.User) error  {
@@ -114,6 +118,7 @@ Last name: Webz
 Phone: +2126666666666
 Image: https://avatars.githubusercontent.com/u/5004111?s=460&u=a5eae6fc0bcdc8c087af14c2e476684daaeb2bbc&v=4
 Is staff: true
+Correction points: 4
 Pool Month/Year: April/2019
 `, string(out))
 }

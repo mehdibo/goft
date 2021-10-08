@@ -19,6 +19,7 @@ import (
 // APIInterface interface for a struct that talks to the 42 API
 type APIInterface interface {
 	Get(url string) (*http.Response, error)
+	Delete(url string, contentType string, body io.Reader) (*http.Response, error)
 	Post(url string, contentType string, body io.Reader) (resp *http.Response, err error)
 	PostJSON(url string, data interface{}) (resp *http.Response, err error)
 	Patch(url string, contentType string, body io.Reader) (resp *http.Response, err error)

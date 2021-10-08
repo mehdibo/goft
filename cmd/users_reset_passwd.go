@@ -9,7 +9,7 @@ import (
 	"gopkg.in/gomail.v2"
 )
 
-// NewUpdateUserCmd create the update user cmd
+// NewResetPasswdCmd create the update user cmd
 func NewResetPasswdCmd(api *ftapi.APIInterface, p password.PasswordGenerator) *cobra.Command {
 	cmd := cobra.Command{
 		Use:   "reset-passwd login",

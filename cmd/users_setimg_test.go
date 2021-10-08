@@ -18,6 +18,9 @@ type setImgMockAPI struct {
 func (m *setImgMockAPI) Get(url string) (*http.Response, error) {
 	return nil, nil
 }
+func (m *setImgMockAPI) Delete(url string, contentType string, body io.Reader) (resp *http.Response, err error) {
+	return nil, nil
+}
 func (m *setImgMockAPI) Post(url string, contentType string, body io.Reader) (resp *http.Response, err error) {
 	return nil, nil
 }
