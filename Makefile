@@ -49,7 +49,7 @@ all_platforms: vendor
 .PHONY: install
 install: $(NAME)
 	sudo mv $(NAME) $(INSTALL_PATH)
-	cp $(CONFIG_FILE_EXAMPLE) $(CONFIG_FILE_TARGET)
+	cp -i $(CONFIG_FILE_EXAMPLE) $(CONFIG_FILE_TARGET)
 	@echo "You need to edit $(CONFIG_FILE_TARGET) with your credentials"
 
 .PHONY: uninstall
