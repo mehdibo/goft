@@ -30,6 +30,7 @@ type APIInterface interface {
 	UpdateUser(login string, data *User) error
 	AddCorrectionPoints(login string, points uint, reason string) error
 	RemoveCorrectionPoints(login string, points uint, reason string) error
+	GetUserAgus(login string) ([]Agu, error)
 }
 
 // API This is a struct to send authenticated requests to the 42 API
@@ -343,4 +344,26 @@ func (ft *API) RemoveCorrectionPoints(login string, points uint, reason string) 
 		}
 	}
 	return nil
+}
+
+func (ft *API) GetUserAgus(login string) ([]Agu, error) {
+	resp, err := ft.Get("/users/"+login+"/anti_grav_units_users")
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		switch resp.StatusCode {
+		case http.StatusNotFound:
+			return nil, errors.New("user not found")
+		default:
+			return nil, errors.New("failed getting user")
+		}
+	}
+	var agus []Agu
+	err = parseJSON(resp.Body, &agus)
+	if err != nil {
+		return nil, err
+	}
+	return agus, err
 }
