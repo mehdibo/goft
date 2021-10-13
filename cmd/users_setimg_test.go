@@ -61,6 +61,12 @@ func (m *setImgMockAPI) AddCorrectionPoints(login string, points uint, reason st
 func (m *setImgMockAPI) RemoveCorrectionPoints(login string, points uint, reason string) error{
 	return nil
 }
+func (m *setImgMockAPI) GetUserAgus(login string) ([]ftapi.Agu, error) {
+	return nil, nil
+}
+func (m *setImgMockAPI) CreateFreePastAgu(login string, duration int, reason string) error {
+	return nil
+}
 
 func TestNewSetImgCmd(t *testing.T) {
 	var api ftapi.APIInterface = &setImgMockAPI{t: t}

@@ -81,6 +81,12 @@ func (m *usersGetMockAPI) AddCorrectionPoints(login string, points uint, reason 
 func (m *usersGetMockAPI) RemoveCorrectionPoints(login string, points uint, reason string) error{
 	return nil
 }
+func (m *usersGetMockAPI) GetUserAgus(login string) ([]ftapi.Agu, error) {
+	return nil, nil
+}
+func (m *usersGetMockAPI) CreateFreePastAgu(login string, duration int, reason string) error {
+	return nil
+}
 
 func TestNewGetUserCmd(t *testing.T) {
 	var api ftapi.APIInterface = &usersGetMockAPI{t: t}

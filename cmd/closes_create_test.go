@@ -61,6 +61,12 @@ func (m *createCloseMockAPI) AddCorrectionPoints(login string, points uint, reas
 func (m *createCloseMockAPI) RemoveCorrectionPoints(login string, points uint, reason string) error{
 	return nil
 }
+func (m *createCloseMockAPI) GetUserAgus(login string) ([]ftapi.Agu, error) {
+	return nil, nil
+}
+func (m *createCloseMockAPI) CreateFreePastAgu(login string, duration int, reason string) error {
+	return nil
+}
 
 func TestNewCloseCreateCmd(t *testing.T) {
 	var api ftapi.APIInterface = &createCloseMockAPI{t: t}
