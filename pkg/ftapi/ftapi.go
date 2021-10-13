@@ -31,6 +31,7 @@ type APIInterface interface {
 	AddCorrectionPoints(login string, points uint, reason string) error
 	RemoveCorrectionPoints(login string, points uint, reason string) error
 	GetUserAgus(login string) ([]Agu, error)
+	CreateFreePastAgu(login string, duration int, reason string) error
 }
 
 // API This is a struct to send authenticated requests to the 42 API
@@ -366,4 +367,26 @@ func (ft *API) GetUserAgus(login string) ([]Agu, error) {
 		return nil, err
 	}
 	return agus, err
+}
+
+func (ft *API) CreateFreePastAgu(login string, duration int, reason string) error {
+	payload := map[string]interface{}{
+		"duration": duration,
+	}
+	if reason != "" {
+		payload["reason"] = reason
+	}
+	resp, err := ft.PostJSON("/users/"+login+"/free_past_agu", payload)
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode != http.StatusOK {
+		switch resp.StatusCode {
+		case http.StatusNotFound:
+			return errors.New("user not found")
+		default:
+			return errors.New("failed adding free past agu")
+		}
+	}
+	return nil
 }
