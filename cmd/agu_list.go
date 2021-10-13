@@ -8,7 +8,7 @@ import (
 
 // NewAguListCmd Create the agu list cmd
 func NewAguListCmd(api *ftapi.APIInterface) *cobra.Command {
-	return &cobra.Command{
+	cmd := &cobra.Command{
 		Use:   "list login",
 		Short: "List a user's AGUs",
 		Args: cobra.ExactArgs(1),
@@ -17,7 +17,21 @@ func NewAguListCmd(api *ftapi.APIInterface) *cobra.Command {
 			if err != nil {
 				return err
 			}
+			hideFree, err := cmd.Flags().GetBool("no-free")
+			if err != nil {
+				return err
+			}
+			onlyFree, err := cmd.Flags().GetBool("only-free")
+			if err != nil {
+				return err
+			}
 			for _, agu := range agus {
+				if hideFree && agu.IsFree {
+					continue
+				}
+				if onlyFree && !agu.IsFree {
+					continue
+				}
 				_, _ = fmt.Fprint(cmd.OutOrStdout(), "\n")
 				_, _ = fmt.Fprintf(cmd.OutOrStdout(), "ID: %d\n", agu.ID)
 				_, _ = fmt.Fprintf(cmd.OutOrStdout(), "Reason: %s\n", agu.Reason)
@@ -30,6 +44,9 @@ func NewAguListCmd(api *ftapi.APIInterface) *cobra.Command {
 			return nil
 		},
 	}
+	cmd.Flags().Bool("no-free", false, "Don't show free AGUs")
+	cmd.Flags().Bool("only-free", false, "Only show free AGUs")
+	return cmd
 }
 var aguListCmd = NewAguListCmd(&API)
 
