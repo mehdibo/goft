@@ -347,6 +347,7 @@ func (ft *API) RemoveCorrectionPoints(login string, points uint, reason string) 
 	return nil
 }
 
+// GetUserAgus get all AGUs for a user
 func (ft *API) GetUserAgus(login string) ([]Agu, error) {
 	resp, err := ft.Get("/users/"+login+"/anti_grav_units_users")
 	if err != nil {
@@ -369,6 +370,7 @@ func (ft *API) GetUserAgus(login string) ([]Agu, error) {
 	return agus, err
 }
 
+// CreateFreePastAgu Create a free past AGU
 func (ft *API) CreateFreePastAgu(login string, duration int, reason string) error {
 	payload := map[string]interface{}{
 		"duration": duration,

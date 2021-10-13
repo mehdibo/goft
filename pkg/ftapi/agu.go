@@ -15,5 +15,5 @@ type Agu struct {
 	ExpectedEndDate string `json:"expected_end_date,omitempty"`
 	BeginDate string `json:"begin_date,omitempty"`
 	AguID int `json:"anti_grav_unit_id,omitempty"`
-	InternshipId int `json:"internship_id,omitempty"`
+	InternshipID int `json:"internship_id,omitempty"`
 }
