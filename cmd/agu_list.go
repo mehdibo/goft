@@ -27,14 +27,6 @@ func NewAguListCmd(api *ftapi.APIInterface) *cobra.Command {
 				_, _ = fmt.Fprintf(cmd.OutOrStdout(), "Ends at: %s\n", agu.EndDate)
 				_, _ = fmt.Fprintf(cmd.OutOrStdout(), "Created at: %s\n", agu.CreatedAt)
 			}
-			//bodyBytes, err := ioutil.ReadAll(resp.Body)
-			//if err != nil {
-			//	return err
-			//}
-			//var prettyJSON bytes.Buffer
-			//_ = json.Indent(&prettyJSON, bodyBytes, "", "\t")
-			//_, _ = fmt.Fprintf(cmd.OutOrStdout(), "%s\n", resp.Status)
-			//_, _ = fmt.Fprintf(cmd.OutOrStdout(), "%s\n", prettyJSON.String())
 			return nil
 		},
 	}
