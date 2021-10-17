@@ -12,9 +12,15 @@ import (
 	"github.com/spf13/viper"
 )
 
-var cfgFile string
-// API is used to interact with the 42 API
-var API ftapi.APIInterface
+var (
+	cfgFile string
+	// API is used to interact with the 42 API
+	API ftapi.APIInterface
+	// Version the current used version
+	Version = "development-build"
+)
+
+
 // NewRootCmd Create new root command
 func NewRootCmd() *cobra.Command {
 	cmd := cobra.Command{
@@ -22,6 +28,7 @@ func NewRootCmd() *cobra.Command {
 		Short: "CLI tool to interact with 42's API",
 	}
 	cmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.goft.yaml)")
+	cmd.Version = Version
 	return &cmd
 }
 
