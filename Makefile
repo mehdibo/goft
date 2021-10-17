@@ -3,12 +3,12 @@ NAME=goft
 INSTALL_PATH=/usr/local/bin
 CONFIG_FILE_EXAMPLE=config.example.yml
 CONFIG_FILE_TARGET=$$HOME/.goft.yml
-
+VERSION ?= "development-version"
 all: $(NAME)
 
 $(NAME): vendor cmd/*.go main.go
 	@echo "Building binary..."
-	$(GOCMD) build -o $(NAME) -v
+	$(GOCMD) build -ldflags "-X 'goft/cmd.Version=$(VERSION)'" -o $(NAME) -v
 
 vendor: go.mod
 	@echo "Installing dependencies..."
@@ -42,7 +42,7 @@ all_platforms: vendor
 			export GOOS $GOOS ; \
 			export GOARCH $GOARCH; \
 			echo "Building binary for $$GOOS - $$GOARCH" ; \
-			go build -o $(NAME)-$$GOOS-$$GOARCH; \
+			$(GOCMD) build -ldflags "-X 'goft/cmd.Version=$(VERSION)'" -o $(NAME)-$$GOOS-$$GOARCH; \
 		done \
     done
 
