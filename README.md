@@ -6,39 +6,45 @@
 ![GitHub all releases](https://img.shields.io/github/downloads/mehdibo/goft/total)
 
 
-A CLI tool to use 42's API
+Goft makes it easier to interact with 42's API without having to deal with the authentication
+nor all the repetitive parsing and validation.
 
-# Usage
+The tool comes with built in commands to do common tasks but also makes it easier to send raw requests.
 
-Clone the repository with:
-```bash
+ * [Installation](#installation)
+   * [Install script](#install-script)
+   * [Compiling sources](#compiling-sources)
+ * [Configuration](#configuration)
+
+## Installation
+
+### Install script
+You can use the provided script to easily install the latest version, just run:
+```shell
+curl https://raw.githubusercontent.com/mehdibo/goft/main/install.sh | bash
+```
+This script will download the binary and make it available globally, it will also download a sample config file
+if it doesn't already exist.
+### Compiling sources
+If you want to compile from the source code, you need to have Golang installed in your machine.
+
+Clone the repository:
+```shell
 git clone https://github.com/mehdibo/goft.git
-cd goft
 ```
 
-### Locally
-To use the binary locally, just compile the binary
-```bash
+Run:
+```shell
+# Or make all_platforms
+# To compile for all platforms
 make
-```
 
-It will create a binary with the name `goft` and voila!
-
-
-### Globally
-If you want to use goft globally just run
-```bash
+# You can also use this to install the binary globally
 make install
 ```
 
-goft is available wherever you go!
 
+## Configuration
+After installing Goft you will have to modify `~/.goft.yml` with your credentials.
 
-To uninstall it, simply run `make uninstall`
-
-### Configuration
-
-You need to configure your oAuth credentials in a *.yaml* file
-If you ran `make install`, it created a `.goft.yaml` in your home folder.
-
-Edit that with the appropriate values
+This file makes it easier to run commands without having to pass the `--config` flag every time.
