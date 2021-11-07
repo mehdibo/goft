@@ -396,5 +396,23 @@ func (ft *API) CreateFreePastAgu(login string, duration int, reason string) erro
 }
 
 func (ft *API) GetProjectByName(name string) (*Project, error) {
-	return nil, nil
+	resp, err := ft.Get("/projects/" + name)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		switch resp.StatusCode {
+		case http.StatusNotFound:
+			return nil, errors.New("user not found")
+		default:
+			return nil, errors.New("failed getting user")
+		}
+	}
+	var project Project
+	err = parseJSON(resp.Body, &project)
+	if err != nil {
+		return nil, err
+	}
+	return &project, nil
 }

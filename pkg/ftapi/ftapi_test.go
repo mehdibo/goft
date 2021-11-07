@@ -2,14 +2,15 @@ package ftapi
 
 import (
 	"bytes"
-	"github.com/stretchr/testify/assert"
-	"golang.org/x/oauth2/clientcredentials"
 	"io"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"os"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"golang.org/x/oauth2/clientcredentials"
 )
 
 func TestNew(t *testing.T) {
@@ -85,8 +86,8 @@ func TestPatch(t *testing.T) {
 }
 
 type testData struct {
-	ID   int    `json:"id"`
-	Name string `json:"name"`
+	ID    int      `json:"id"`
+	Name  string   `json:"name"`
 	Array []string `json:"array"`
 }
 
@@ -103,8 +104,8 @@ func TestPostJson(t *testing.T) {
 	defer server.Close()
 	ftAPI := New(server.URL, server.Client())
 	resp, err := ftAPI.PostJSON("/v1/users", testData{
-		ID:   10,
-		Name: "Spoody",
+		ID:    10,
+		Name:  "Spoody",
 		Array: []string{"test_1", "test_2"},
 	})
 	assert.Nil(t, err)
@@ -125,15 +126,14 @@ func TestPatchJson(t *testing.T) {
 	defer server.Close()
 	ftAPI := New(server.URL, server.Client())
 	resp, err := ftAPI.PatchJSON("/v1/users", testData{
-		ID:   10,
-		Name: "Spoody",
+		ID:    10,
+		Name:  "Spoody",
 		Array: []string{"test_1", "test_2"},
 	})
 	assert.Nil(t, err)
 	assert.Equal(t, "OK", getBody(resp.Body))
 	assert.Equal(t, "test_value", resp.Header.Get("X-Test"))
 }
-
 
 func TestHourlyLimit(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
@@ -254,10 +254,10 @@ func TestCreateClose(t *testing.T) {
 	defer server.Close()
 	ftAPI := New(server.URL, server.Client())
 	err := ftAPI.CreateClose(&Close{
-		Kind:              "agu",
-		Reason:            "This is for testing purposes",
-		User:              &User{
-			Login:     "spoody",
+		Kind:   "agu",
+		Reason: "This is for testing purposes",
+		User: &User{
+			Login: "spoody",
 		},
 		Closer: &User{
 			ID: 37,
@@ -321,11 +321,11 @@ func TestUpdateUser(t *testing.T) {
 	testData := []map[string]interface{}{
 		{
 			"payload": &User{
-				Email: "spoody@local.test",
+				Email:     "spoody@local.test",
 				FirstName: "Spooder",
-				LastName: "Webz",
-				Password: "test",
-				Kind: "student",
+				LastName:  "Webz",
+				Password:  "test",
+				Kind:      "student",
 			},
 			"expected_payload": "{\"user\":{\"email\":\"spoody@local.test\",\"first_name\":\"Spooder\",\"kind\":\"student\",\"last_name\":\"Webz\",\"password\":\"test\"}}",
 		},
@@ -414,4 +414,54 @@ func TestRemoveCorrectionPoints(t *testing.T) {
 	ftAPI := New(server.URL, server.Client())
 	err := ftAPI.RemoveCorrectionPoints("spoody", 5, "Testing")
 	assert.Nil(t, err)
+}
+
+func TestGetProjectByName(t *testing.T) {
+	assert := assert.New(t)
+	server := httptest.NewServer(http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
+		assert.Equal("GET", req.Method)
+		assert.Equal("/projects/libft", req.URL.String())
+		assert.Equal("", getBody(req.Body))
+		rw.WriteHeader(http.StatusOK)
+		_, _ = rw.Write([]byte("{\"id\": 1,\"name\": \"Libft\",\"slug\": \"libft\",\"parent\": null,\"children\": [],\"attachments\": [],\"created_at\": \"2014-11-02T18:23:57.156Z\",\"updated_at\": \"2021-11-03T09:36:15.705Z\",\"exam\": false,\"git_id\": null,\"repository\": null,\"cursus\": [{\"id\": 1,\"created_at\": \"2014-11-02T16:43:38.480Z\",\"name\": \"42\",\"slug\": \"42\"},{\"id\": 8,\"created_at\": \"2015-09-22T11:35:20.216Z\",\"name\": \"WeThinkCode_\",\"slug\": \"wethinkcode_\"},{\"id\": 10,\"created_at\": \"2015-11-12T16:35:19.549Z\",\"name\": \"Formation Pole Emploi\",\"slug\": \"formation-pole-emploi\"}],\"campus\": [{\"id\": 42,\"name\": \"42Network\",\"time_zone\": \"Europe/Paris\",\"language\": {\"id\": 2,\"name\": \"English\",\"identifier\": \"en\",\"created_at\": \"2015-04-14T16:07:38.122Z\",\"updated_at\": \"2021-11-05T14:28:42.585Z\"},\"users_count\": 12,\"vogsphere_id\": 1,\"country\": \"France\",\"address\": \"96 boulevard Bessières\",\"zip\": \"75017\",\"city\": \"PARIS\",\"website\": \"http://42network.org/\",\"facebook\": \"\",\"twitter\": \"\",\"active\": true,\"email_extension\": \"42network.org\",\"default_hidden_phone\": false},{\"id\": 26,\"name\": \"Tokyo\",\"time_zone\": \"Asia/Tokyo\",\"language\": {\"id\": 13,\"name\": \"Japanese\",\"identifier\": \"ja\",\"created_at\": \"2019-11-15T13:34:10.581Z\",\"updated_at\": \"2021-11-03T12:42:58.540Z\"},\"users_count\": 3184,\"vogsphere_id\": 17,\"country\": \"Japan\",\"address\": \"Sumitomo Fudosan Roppongi Grand Tower 3-2-1 Roppongi Minato-ku reception: 24F\",\"zip\": \"106-6224\",\"city\": \"Tokyo\",\"website\": \"https://42tokyo.jp\",\"facebook\": \"https://www.facebook.com/42tokyo/\",\"twitter\": \"https://twitter.com/42_tokyo\",\"active\": true,\"email_extension\": \"42tokyo.jp\",\"default_hidden_phone\": true}],\"videos\": [],\"project_sessions\": [{\"id\": 2697,\"solo\": true,\"begin_at\": null,\"end_at\": null,\"estimate_time\": \"14 days\",\"difficulty\": 85,\"objectives\": [\"Basics of C programming\",\"Unix C library\",\"Static library creation\"],\"description\": \"This project is going to help you consolidate your piscine experience. You are going to re-code several functions of the standard C library, as well as other utility functions that you will use often during your training.\",\"duration_days\": null,\"terminating_after\": null,\"project_id\": 1,\"campus_id\": 13,\"cursus_id\": 1,\"created_at\": \"2018-09-06T13:41:29.663Z\",\"updated_at\": \"2021-09-24T08:18:18.319Z\",\"max_people\": null,\"is_subscriptable\": true,\"scales\": [{\"id\": 826,\"correction_number\": 5,\"is_primary\": true},{\"id\": 697,\"correction_number\": 5,\"is_primary\": false},{\"id\": 672,\"correction_number\": 5,\"is_primary\": false},{\"id\": 1,\"correction_number\": 5,\"is_primary\": false}],\"uploads\": [{\"id\": 70,\"name\": \"Moulinette\"}],\"team_behaviour\": \"user\",\"commit\": null},{\"id\": 944,\"solo\": true,\"begin_at\": null,\"end_at\": null,\"estimate_time\": \"7 days\",\"difficulty\": 100,\"objectives\": [\"Basics of C programming\",\"Unix C library\",\"Static library creation\"],\"description\": \"Ce premier projet en tant qu'étudiant de 42 va vous faire consolider vos acquis de piscine. Vous allez recoder un certain nombre de fonctions de la librairie C standard, ainsi que d'autres fonctions utilitaires que vous réutiliserez tout au long de votre cursus.\",\"duration_days\": null,\"terminating_after\": null,\"project_id\": 1,\"campus_id\": 7,\"cursus_id\": 1,\"created_at\": \"2016-10-31T16:23:40.149Z\",\"updated_at\": \"2020-04-08T03:17:41.804Z\",\"max_people\": null,\"is_subscriptable\": false,\"scales\": [{\"id\": 826,\"correction_number\": 5,\"is_primary\": true},{\"id\": 697,\"correction_number\": 5,\"is_primary\": false},{\"id\": 672,\"correction_number\": 5,\"is_primary\": false},{\"id\": 1,\"correction_number\": 5,\"is_primary\": false}],\"uploads\": [{\"id\": 70,\"name\": \"Moulinette\"}],\"team_behaviour\": \"user\",\"commit\": null}]}"))
+	}))
+	defer server.Close()
+	ftAPI := New(server.URL, server.Client())
+	project, err := ftAPI.GetProjectByName("libft")
+
+	assert.NotNil(project)
+	assert.Nil(err)
+	assert.Equal(1, project.ID)
+	assert.Equal("Libft", project.Name)
+	assert.Equal("libft", project.Slug)
+	assert.Equal("2014-11-02 18:23:57.156 +0000 UTC", project.CreatedAt.String())
+	assert.Equal("2021-11-03 09:36:15.705 +0000 UTC", project.UpdatedAt.String())
+	assert.False(project.Exam)
+	assert.Nil(project.GitID)
+	assert.Nil(project.Repogitory)
+
+	assert.Equal(1, project.Cursus[0].ID)
+	assert.Equal("2014-11-02 16:43:38.48 +0000 UTC", project.Cursus[0].CreatedAt.String())
+	assert.Equal("42", project.Cursus[0].Name)
+	assert.Equal("42", project.Cursus[0].Slug)
+
+	assert.Equal(42, project.Campus[0].ID)
+	assert.Equal("42Network", project.Campus[0].Name)
+	assert.Equal("Europe/Paris", project.Campus[0].TimeZone)
+	// TODO
+	// more test for Campus
+
+	assert.Equal([]string{}, project.Videos)
+
+	assert.Equal(2697, project.ProjectSessions[0].ID)
+	assert.True(project.ProjectSessions[0].Solo)
+	assert.Equal("14 days", project.ProjectSessions[0].EstimateTime)
+	assert.Equal(85, project.ProjectSessions[0].Difficulty)
+	assert.Equal("Basics of C programming", project.ProjectSessions[0].Objectives[0])
+	assert.Equal("Unix C library", project.ProjectSessions[0].Objectives[1])
+	assert.Equal("Static library creation", project.ProjectSessions[0].Objectives[2])
+	assert.Equal(1, project.ProjectSessions[0].ProjectID)
+	assert.Equal(13, project.ProjectSessions[0].CampusID)
+	// TODO
+	// more test for ProjectSessions
 }
