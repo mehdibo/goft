@@ -54,8 +54,8 @@ type Project struct {
 	CreatedAt       time.Time        `json:"created_at,omitempty"`
 	UpdatedAt       time.Time        `json:"updated_at,omitempty"`
 	Exam            bool             `json:"exam"`
-	GitID           int              `json:"git_id,omitempty"`
-	Repogitory      string           `json:"repository,omitempty"`
+	GitID           *int             `json:"git_id,omitempty"`
+	Repogitory      *string          `json:"repository,omitempty"`
 	Cursus          []*cursus        `json:"cursus,omitempty"`
 	Campus          []*Campus        `json:"campus,omitempty"`
 	Videos          []string         `json:"videos,omitempty"` // TODO
