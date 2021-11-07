@@ -2,19 +2,21 @@ package cmd
 
 import (
 	"bytes"
-	"github.com/spf13/cobra"
-	"github.com/stretchr/testify/assert"
 	"goft/pkg/ftapi"
 	"io"
 	"io/ioutil"
 	"net/http"
 	"os"
 	"testing"
+
+	"github.com/spf13/cobra"
+	"github.com/stretchr/testify/assert"
 )
 
 type removePointsMockAPI struct {
 	t *testing.T
 }
+
 func (m *removePointsMockAPI) Get(url string) (*http.Response, error) {
 	return nil, nil
 }
@@ -45,13 +47,13 @@ func (m *removePointsMockAPI) CreateClose(close *ftapi.Close) error {
 func (m *removePointsMockAPI) GetUserByLogin(login string) (*ftapi.User, error) {
 	return nil, nil
 }
-func (m *removePointsMockAPI) UpdateUser(login string, data *ftapi.User) error  {
+func (m *removePointsMockAPI) UpdateUser(login string, data *ftapi.User) error {
 	return nil
 }
-func (m *removePointsMockAPI) AddCorrectionPoints(login string, points uint, reason string) error{
+func (m *removePointsMockAPI) AddCorrectionPoints(login string, points uint, reason string) error {
 	return nil
 }
-func (m *removePointsMockAPI) RemoveCorrectionPoints(login string, points uint, reason string) error{
+func (m *removePointsMockAPI) RemoveCorrectionPoints(login string, points uint, reason string) error {
 	assert.Equal(m.t, "norminet", login)
 	assert.Equal(m.t, uint(2), points)
 	assert.Equal(m.t, "Meow", reason)
@@ -62,6 +64,9 @@ func (m *removePointsMockAPI) GetUserAgus(login string) ([]ftapi.Agu, error) {
 }
 func (m *removePointsMockAPI) CreateFreePastAgu(login string, duration int, reason string) error {
 	return nil
+}
+func (m *removePointsMockAPI) GetProjectByName(name string) (*ftapi.Project, error) {
+	return nil, nil
 }
 
 func TestNewRemovePointsCmd(t *testing.T) {
