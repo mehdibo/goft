@@ -2,19 +2,21 @@ package cmd
 
 import (
 	"bytes"
-	"github.com/spf13/cobra"
-	"github.com/stretchr/testify/assert"
 	"goft/pkg/ftapi"
 	"io"
 	"io/ioutil"
 	"net/http"
 	"os"
 	"testing"
+
+	"github.com/spf13/cobra"
+	"github.com/stretchr/testify/assert"
 )
 
 type mockAPI struct {
 	t *testing.T
 }
+
 func (m *mockAPI) Get(url string) (*http.Response, error) {
 	return nil, nil
 }
@@ -61,13 +63,13 @@ func (m *mockAPI) CreateClose(close *ftapi.Close) error {
 func (m *mockAPI) GetUserByLogin(login string) (*ftapi.User, error) {
 	return nil, nil
 }
-func (m *mockAPI) UpdateUser(login string, data *ftapi.User) error  {
+func (m *mockAPI) UpdateUser(login string, data *ftapi.User) error {
 	return nil
 }
-func (m *mockAPI) AddCorrectionPoints(login string, points uint, reason string) error{
+func (m *mockAPI) AddCorrectionPoints(login string, points uint, reason string) error {
 	return nil
 }
-func (m *mockAPI) RemoveCorrectionPoints(login string, points uint, reason string) error{
+func (m *mockAPI) RemoveCorrectionPoints(login string, points uint, reason string) error {
 	return nil
 }
 func (m *mockAPI) GetUserAgus(login string) ([]ftapi.Agu, error) {
@@ -76,7 +78,9 @@ func (m *mockAPI) GetUserAgus(login string) ([]ftapi.Agu, error) {
 func (m *mockAPI) CreateFreePastAgu(login string, duration int, reason string) error {
 	return nil
 }
-
+func (m *mockAPI) GetProjectByName(name string) (*ftapi.Project, error) {
+	return nil, nil
+}
 
 func TestNewUserCreateCmd(t *testing.T) {
 	var api ftapi.APIInterface = &mockAPI{t: t}

@@ -2,8 +2,6 @@ package cmd
 
 import (
 	"bytes"
-	"github.com/spf13/cobra"
-	"github.com/stretchr/testify/assert"
 	"goft/pkg/ftapi"
 	"io"
 	"io/ioutil"
@@ -11,11 +9,15 @@ import (
 	"os"
 	"strings"
 	"testing"
+
+	"github.com/spf13/cobra"
+	"github.com/stretchr/testify/assert"
 )
 
 type updateUserMockAPI struct {
 	t *testing.T
 }
+
 func (m *updateUserMockAPI) Get(url string) (*http.Response, error) {
 	return nil, nil
 }
@@ -46,7 +48,7 @@ func (m *updateUserMockAPI) CreateClose(close *ftapi.Close) error {
 func (m *updateUserMockAPI) GetUserByLogin(login string) (*ftapi.User, error) {
 	return nil, nil
 }
-func (m *updateUserMockAPI) UpdateUser(login string, data *ftapi.User) error  {
+func (m *updateUserMockAPI) UpdateUser(login string, data *ftapi.User) error {
 	assert.Equal(m.t, "spoody", login)
 	assert.Equal(m.t, "Spooder", data.FirstName)
 	assert.Equal(m.t, "Webz", data.LastName)
@@ -54,10 +56,10 @@ func (m *updateUserMockAPI) UpdateUser(login string, data *ftapi.User) error  {
 	assert.Equal(m.t, "new_password", data.Password)
 	return nil
 }
-func (m *updateUserMockAPI) AddCorrectionPoints(login string, points uint, reason string) error{
+func (m *updateUserMockAPI) AddCorrectionPoints(login string, points uint, reason string) error {
 	return nil
 }
-func (m *updateUserMockAPI) RemoveCorrectionPoints(login string, points uint, reason string) error{
+func (m *updateUserMockAPI) RemoveCorrectionPoints(login string, points uint, reason string) error {
 	return nil
 }
 func (m *updateUserMockAPI) GetUserAgus(login string) ([]ftapi.Agu, error) {
@@ -65,6 +67,9 @@ func (m *updateUserMockAPI) GetUserAgus(login string) ([]ftapi.Agu, error) {
 }
 func (m *updateUserMockAPI) CreateFreePastAgu(login string, duration int, reason string) error {
 	return nil
+}
+func (m *updateUserMockAPI) GetProjectByName(name string) (*ftapi.Project, error) {
+	return nil, nil
 }
 
 func TestNewUpdateUserCmd(t *testing.T) {
@@ -112,7 +117,6 @@ func TestUpdateUserWithInvalidArgs(t *testing.T) {
 	updateUserCmd.SetErr(stderr)
 	err := updateUserCmd.Execute()
 	assert.NotNil(t, err)
-
 
 	errOut, readErr := ioutil.ReadAll(stderr)
 	if readErr != nil {
