@@ -30,14 +30,14 @@ func NewResetPointsCmd(api *ftapi.APIInterface) *cobra.Command {
 			if err != nil {
 				return err
 			}
-			// If not zero, delete all points
+			// If greater than zero, delete all points
 			if user.CorrectionPoints > 0 {
 				err = (*api).RemoveCorrectionPoints(user.Login, uint(user.CorrectionPoints), args[2])
 				if err != nil {
 					return err
 				}
 			}
-			// If less than zero reset it to zer
+			// If less than zero reset it to zero
 			if user.CorrectionPoints < 0 {
 				err = (*api).AddCorrectionPoints(user.Login, uint(user.CorrectionPoints * -1), args[2])
 				if err != nil {
