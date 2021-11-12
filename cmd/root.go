@@ -74,8 +74,10 @@ func initConfig() {
 	viper.SetDefault("scopes", []string{"profile"})
 
 	// If a config file is found, read it in.
-	if err := viper.ReadInConfig(); err == nil {
-		fmt.Println("Using config file:", viper.ConfigFileUsed())
+	err := viper.ReadInConfig()
+	if err != nil {
+		_, _ = fmt.Fprintf(rootCmd.OutOrStderr(), "An error occured: %v\n", err)
+		os.Exit(1)
 	}
 
 	requiredConfigs := []string{
