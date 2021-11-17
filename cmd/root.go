@@ -1,14 +1,17 @@
 package cmd
 
 import (
+	"context"
 	"fmt"
 	"goft/pkg/ftapi"
+	"log"
+	"net/http"
 	"os"
 	"path/filepath"
+	"sync"
 
 	"github.com/spf13/cobra"
 	"golang.org/x/oauth2"
-	"golang.org/x/oauth2/clientcredentials"
 
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/viper"
@@ -20,6 +23,7 @@ var (
 	API ftapi.APIInterface
 	// Version the current used version
 	Version = "development-build"
+	token   *oauth2.Token
 )
 
 // NewRootCmd Create new root command
@@ -74,6 +78,7 @@ func initConfig() {
 	viper.SetConfigType("yml")
 	viper.AutomaticEnv()
 
+	viper.SetDefault("auth_endpoint", "https://api.intra.42.fr/oauth/authorize")
 	viper.SetDefault("token_endpoint", "https://api.intra.42.fr/oauth/token")
 	viper.SetDefault("api_endpoint", "https://api.intra.42.fr/v2")
 	viper.SetDefault("scopes", []string{"profile"})
@@ -95,13 +100,82 @@ func initConfig() {
 			os.Exit(1)
 		}
 	}
+	confIntra := &oauth2.Config{
+		ClientID:     viper.GetString("client_id"),
+		ClientSecret: viper.GetString("client_secret"),
+		Scopes:       viper.GetStringSlice("scopes"),
+		Endpoint: oauth2.Endpoint{
+			AuthURL:  viper.GetString("auth_endpoint"),
+			TokenURL: viper.GetString("token_endpoint"),
+		},
+		RedirectURL: viper.GetString("redirect_uri"),
+	}
 
-	API = ftapi.NewFromCredentials(viper.GetString("api_endpoint"), &clientcredentials.Config{
-		ClientID:       viper.GetString("client_id"),
-		ClientSecret:   viper.GetString("client_secret"),
-		TokenURL:       viper.GetString("token_endpoint"),
-		Scopes:         viper.GetStringSlice("scopes"),
-		EndpointParams: nil,
-		AuthStyle:      oauth2.AuthStyleInParams,
-	})
+	if viper.GetString("access_token") == "" {
+		httpServerExitDone := &sync.WaitGroup{}
+		httpServerExitDone.Add(1)
+		srv := startHttpServer(httpServerExitDone)
+
+		url := confIntra.AuthCodeURL("")
+
+		fmt.Println("Open this URL")
+		fmt.Println(url)
+
+		for {
+			if token != nil {
+				if err := srv.Shutdown(context.Background()); err != nil {
+					panic(err)
+				}
+				httpServerExitDone.Wait()
+				break
+			}
+		}
+		viper.Set("access_token", token.AccessToken)
+		//		viper.WriteConfig()
+	} else {
+		token = &oauth2.Token{
+			AccessToken: viper.GetString("access_token"),
+		}
+	}
+	ctx := context.Background()
+	client := confIntra.Client(ctx, token)
+	API = ftapi.New(viper.GetString("api_endpoint"), client)
+}
+
+func startHttpServer(wg *sync.WaitGroup) *http.Server {
+	srv := &http.Server{Addr: ":4200"}
+	http.HandleFunc("/", IntraLoginRHandler)
+
+	go func() {
+		defer wg.Done()
+		if err := srv.ListenAndServe(); err != http.ErrServerClosed {
+			log.Fatalf("ListenAndServe(): %v", err)
+		}
+	}()
+
+	return srv
+}
+
+func IntraLoginRHandler(w http.ResponseWriter, r *http.Request) {
+	confIntra := &oauth2.Config{
+		ClientID:     viper.GetString("client_id"),
+		ClientSecret: viper.GetString("client_secret"),
+		Scopes:       viper.GetStringSlice("scopes"),
+		Endpoint: oauth2.Endpoint{
+			AuthURL:  viper.GetString("auth_endpoint"),
+			TokenURL: viper.GetString("token_endpoint"),
+		},
+		RedirectURL: viper.GetString("redirect_uri"),
+	}
+
+	code := r.URL.Query()["code"]
+	if code == nil || len(code) == 0 {
+		fmt.Fprint(w, "Invalid Parameter")
+	}
+	ctx := context.Background()
+	tok, err := confIntra.Exchange(ctx, code[0])
+	if err != nil {
+		fmt.Fprintf(w, "OAuth Error:%v", err)
+	}
+	token = tok
 }
