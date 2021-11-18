@@ -19,8 +19,8 @@ var (
 	// API is used to interact with the 42 API
 	API ftapi.APIInterface
 	// Version the current used version
-	Version = "development-build"
-	token   *oauth2.Token
+	Version   = "development-build"
+	tokenChan chan *oauth2.Token
 )
 
 // NewRootCmd Create new root command
@@ -111,7 +111,11 @@ func initConfig() {
 		RedirectURL: viper.GetString("redirect_uri"),
 	}
 
-	token := genToken(config)
+	token, err := genToken(config)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 	ctx := context.Background()
 	client := config.Client(ctx, token)
 	API = ftapi.New(viper.GetString("api_endpoint"), client)
