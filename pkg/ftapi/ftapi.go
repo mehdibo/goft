@@ -13,6 +13,7 @@ import (
 	"strconv"
 	"time"
 
+	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/clientcredentials"
 )
 
@@ -34,6 +35,7 @@ type APIInterface interface {
 	GetUserAgus(login string) ([]Agu, error)
 	CreateFreePastAgu(login string, duration int, reason string) error
 	GetProjectByName(name string) (*Project, error)
+	GetToken() (*oauth2.Token, error)
 }
 
 // API This is a struct to send authenticated requests to the 42 API
@@ -415,4 +417,9 @@ func (ft *API) GetProjectByName(name string) (*Project, error) {
 		return nil, err
 	}
 	return &project, nil
+}
+
+func (ft *API) GetToken() (*oauth2.Token, error) {
+	transport := ft.httpClient.Transport.(*oauth2.Transport)
+	return transport.Source.Token()
 }
