@@ -345,7 +345,7 @@ func (ft *API) RemoveCorrectionPoints(login string, points uint, reason string) 
 		case http.StatusNotFound:
 			return errors.New("user not found")
 		default:
-			return errors.New("failed adding correction points")
+			return errors.New("failed removing correction points")
 		}
 	}
 	return nil
