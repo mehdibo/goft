@@ -32,6 +32,7 @@ func NewGetProjectCmd(api *ftapi.APIInterface) *cobra.Command {
 		Short: "Get details about a project",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
+			defer saveConfig()
 			project, err := (*api).GetProjectByName(args[0])
 			if err != nil {
 				return err
