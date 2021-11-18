@@ -4,9 +4,10 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/spf13/cobra"
 	"goft/pkg/ftapi"
 	"io/ioutil"
+
+	"github.com/spf13/cobra"
 )
 
 // NewRequestsGetCmd Create the get request cmd
@@ -14,9 +15,10 @@ func NewRequestsGetCmd(api *ftapi.APIInterface) *cobra.Command {
 	return &cobra.Command{
 		Use:   "get path",
 		Short: "Send a GET request",
-		Long: `Send a GET request to path, the path must be the part after /v2/`,
-		Args: cobra.ExactArgs(1),
+		Long:  `Send a GET request to path, the path must be the part after /v2/`,
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
+			defer saveConfig()
 			resp, err := (*api).Get(args[0])
 			if err != nil {
 				return err
@@ -33,6 +35,7 @@ func NewRequestsGetCmd(api *ftapi.APIInterface) *cobra.Command {
 		},
 	}
 }
+
 var requestsGetCmd = NewRequestsGetCmd(&API)
 
 func init() {
