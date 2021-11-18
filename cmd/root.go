@@ -71,7 +71,7 @@ func initConfig() {
 
 		// Search config in home directory with name ".goft" (without extension).
 		viper.AddConfigPath(dir)
-		viper.SetConfigName("secret")
+		viper.SetConfigName("config")
 	}
 
 	// Load config from env variables if available
@@ -93,14 +93,17 @@ func initConfig() {
 	requiredConfigs := []string{
 		"client_id",
 		"client_secret",
+		"redirect_uri",
 	}
+
 	for _, requiredConfig := range requiredConfigs {
 		if viper.GetString(requiredConfig) == "" {
 			_, _ = fmt.Fprintf(rootCmd.OutOrStderr(), "%s is required but not set in the config file\n", requiredConfig)
 			os.Exit(1)
 		}
 	}
-	confIntra := &oauth2.Config{
+
+	config := &oauth2.Config{
 		ClientID:     viper.GetString("client_id"),
 		ClientSecret: viper.GetString("client_secret"),
 		Scopes:       viper.GetStringSlice("scopes"),
@@ -116,12 +119,13 @@ func initConfig() {
 		httpServerExitDone.Add(1)
 		srv := startHttpServer(httpServerExitDone)
 
-		url := confIntra.AuthCodeURL("")
+		url := config.AuthCodeURL("")
 
 		fmt.Println("Open this URL")
 		fmt.Println(url)
 
 		for {
+			// TODO: handling with channel
 			if token != nil {
 				if err := srv.Shutdown(context.Background()); err != nil {
 					panic(err)
@@ -130,21 +134,29 @@ func initConfig() {
 				break
 			}
 		}
-		viper.Set("access_token", token.AccessToken)
-		//		viper.WriteConfig()
 	} else {
 		token = &oauth2.Token{
-			AccessToken: viper.GetString("access_token"),
+			AccessToken:  viper.GetString("access_token"),
+			TokenType:    viper.GetString("token_type"),
+			RefreshToken: viper.GetString("refresh_token"),
+			Expiry:       viper.GetTime("expiry_time"),
 		}
 	}
+
+	viper.Set("access_token", token.AccessToken)
+	viper.Set("token_type", token.TokenType)
+	viper.Set("refresh_token", token.RefreshToken)
+	viper.Set("expiry_time", token.Expiry)
+	viper.WriteConfig()
+
 	ctx := context.Background()
-	client := confIntra.Client(ctx, token)
+	client := config.Client(ctx, token)
 	API = ftapi.New(viper.GetString("api_endpoint"), client)
 }
 
 func startHttpServer(wg *sync.WaitGroup) *http.Server {
 	srv := &http.Server{Addr: ":4200"}
-	http.HandleFunc("/", IntraLoginRHandler)
+	http.HandleFunc("/", LoginRedirectHandler)
 
 	go func() {
 		defer wg.Done()
@@ -156,8 +168,8 @@ func startHttpServer(wg *sync.WaitGroup) *http.Server {
 	return srv
 }
 
-func IntraLoginRHandler(w http.ResponseWriter, r *http.Request) {
-	confIntra := &oauth2.Config{
+func LoginRedirectHandler(w http.ResponseWriter, r *http.Request) {
+	config := &oauth2.Config{
 		ClientID:     viper.GetString("client_id"),
 		ClientSecret: viper.GetString("client_secret"),
 		Scopes:       viper.GetStringSlice("scopes"),
@@ -173,9 +185,12 @@ func IntraLoginRHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprint(w, "Invalid Parameter")
 	}
 	ctx := context.Background()
-	tok, err := confIntra.Exchange(ctx, code[0])
+	tok, err := config.Exchange(ctx, code[0])
 	if err != nil {
 		fmt.Fprintf(w, "OAuth Error:%v", err)
 	}
+	fmt.Fprintln(w, "Successfully logged in. Please close the tab.")
+
+	// TODO: handling with channel
 	token = tok
 }
