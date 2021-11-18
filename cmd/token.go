@@ -6,6 +6,9 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
+	"os/exec"
+	"runtime"
 	"strings"
 	"sync"
 
@@ -24,8 +27,23 @@ func genToken(config *oauth2.Config) (*oauth2.Token, error) {
 		srv := startHttpServer(httpServerExitDone)
 
 		url := config.AuthCodeURL("")
-		fmt.Println("Open this URL")
-		fmt.Println(url)
+		browser := "xdg-open"
+		if runtime.GOOS == "darwin" {
+			browser = "open"
+		}
+		args := []string{url}
+		browser, err := exec.LookPath(browser)
+		if err == nil {
+			cmd := exec.Command(browser, args...)
+			cmd.Stderr = os.Stderr
+			err = cmd.Start()
+			if err != nil {
+				return nil, fmt.Errorf("cannot start command: %v", err)
+			}
+		} else {
+			fmt.Println("Open this URL")
+			fmt.Println(url)
+		}
 
 		token = <-tokenChan
 		if err := srv.Shutdown(context.Background()); err != nil {
