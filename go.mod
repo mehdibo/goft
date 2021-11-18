@@ -3,6 +3,7 @@ module goft
 go 1.16
 
 require (
+	github.com/fatih/color v1.13.0
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/sethvargo/go-password v0.2.0
 	github.com/spf13/cobra v1.1.1

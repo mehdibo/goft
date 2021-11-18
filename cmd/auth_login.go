@@ -1,8 +1,10 @@
 package cmd
 
 import (
+	"encoding/json"
 	"goft/pkg/ftapi"
 
+	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 )
 
@@ -13,7 +15,16 @@ func NewLoginCmd(api *ftapi.APIInterface) *cobra.Command {
 		Short: "Authenticate with a 42intra host",
 		Args:  cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			cmd.Print("[Executed] goft auth login")
+			defer saveConfig()
+			resp, err := (*api).Get("/me")
+			if err != nil {
+				return err
+			}
+			var m map[string]interface{}
+			err = json.NewDecoder(resp.Body).Decode(&m)
+			color.Set(color.FgGreen)
+			cmd.Printf("Logged in as %s\n", m["login"])
+			color.Set(color.Reset)
 			return nil
 		},
 	}
