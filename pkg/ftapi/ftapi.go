@@ -5,7 +5,9 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
+	"log"
 	"mime/multipart"
 	"net/http"
 	"os"
@@ -13,6 +15,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/fatih/color"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/clientcredentials"
 )
@@ -25,18 +28,23 @@ type APIInterface interface {
 	PostJSON(url string, data interface{}) (resp *http.Response, err error)
 	Patch(url string, contentType string, body io.Reader) (resp *http.Response, err error)
 	PatchJSON(url string, data interface{}) (resp *http.Response, err error)
+	GetToken() (*oauth2.Token, error)
+
 	CreateUser(user *User, campusID int) error
 	SetUserImage(login string, img *os.File) error
 	CreateClose(close *Close) error
 	GetUserByLogin(login string) (*User, error)
 	GetMe() (*User, error)
 	UpdateUser(login string, data *User) error
+
 	AddCorrectionPoints(login string, points uint, reason string) error
 	RemoveCorrectionPoints(login string, points uint, reason string) error
+
 	GetUserAgus(login string) ([]Agu, error)
 	CreateFreePastAgu(login string, duration int, reason string) error
+
 	GetProjectByName(name string) (*Project, error)
-	GetToken() (*oauth2.Token, error)
+	GetUserProjects(loginID int, filter_param map[string]string, range_param map[string]string) ([]*ProjectUser, error)
 }
 
 // API This is a struct to send authenticated requests to the 42 API
@@ -445,4 +453,42 @@ func (ft *API) GetProjectByName(name string) (*Project, error) {
 func (ft *API) GetToken() (*oauth2.Token, error) {
 	transport := ft.httpClient.Transport.(*oauth2.Transport)
 	return transport.Source.Token()
+}
+
+func (ft *API) GetUserProjects(loginID int, filter_param map[string]string, range_param map[string]string) ([]*ProjectUser, error) {
+	strID := strconv.Itoa(loginID)
+	req, err := http.NewRequest("GET", ft.apiEndpoint+"/users/"+strID+"/projects_users", nil)
+	if err != nil {
+		color.Set(color.FgRed)
+		log.Print("http.NewRequest:", err)
+		color.Set(color.Reset)
+		return nil, err
+	}
+	params := req.URL.Query()
+	for k, v := range filter_param {
+		params.Add("filter["+k+"]", v)
+	}
+	for k, v := range range_param {
+		params.Add("range["+k+"]", v)
+	}
+	req.URL.RawQuery = params.Encode()
+	resp, err := ft.do(req)
+	if err != nil {
+		color.Set(color.FgRed)
+		log.Print("ft.do:", err)
+		color.Set(color.Reset)
+		return nil, err
+	}
+	defer resp.Body.Close()
+	var projects []*ProjectUser
+	err = parseJSON(resp.Body, &projects)
+	if err != nil {
+		color.Set(color.FgRed)
+		log.Print("parseJSON:", err)
+		color.Set(color.FgBlue)
+		fmt.Println(resp)
+		color.Set(color.Reset)
+		return nil, err
+	}
+	return projects, nil
 }
