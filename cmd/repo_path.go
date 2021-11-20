@@ -35,7 +35,10 @@ func NewRepoPathCmd(api *ftapi.APIInterface) *cobra.Command {
 				if len(project.Teams) == 0 {
 					continue
 				}
-				team := latestTeam(project.Teams)
+				team, err := currentTeam(project)
+				if err != nil {
+					return err
+				}
 				fmt.Println(team.RepoURL)
 				return nil
 			}
