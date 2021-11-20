@@ -36,7 +36,7 @@ func NewRepoPathCmd(api *ftapi.APIInterface) *cobra.Command {
 					continue
 				}
 				team := latestTeam(project.Teams)
-				cmd.Println(team.RepoURL)
+				fmt.Println(team.RepoURL)
 				return nil
 			}
 			cmd.Printf("Team of %s is not locked.", args[0])
