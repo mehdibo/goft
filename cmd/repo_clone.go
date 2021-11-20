@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"errors"
 	"fmt"
 	"goft/pkg/ftapi"
 	"os"
@@ -43,7 +44,10 @@ func NewCloneProjectCmd(api *ftapi.APIInterface) *cobra.Command {
 				} else {
 					targetPath = args[0]
 				}
-				team := latestTeam(project.Teams)
+				team, err := currentTeam(project)
+				if err != nil {
+					return err
+				}
 				return cloneRepo(team.RepoURL, targetPath)
 			}
 			cmd.Printf("Team of %s is not locked.", args[0])
@@ -52,14 +56,13 @@ func NewCloneProjectCmd(api *ftapi.APIInterface) *cobra.Command {
 	}
 }
 
-func latestTeam(teams []ftapi.Team) ftapi.Team {
-	latestTeam := teams[0]
-	for _, team := range teams {
-		if latestTeam.ClosedAt.Before(team.ClosedAt) {
-			latestTeam = team
+func currentTeam(project *ftapi.ProjectUser) (*ftapi.Team, error) {
+	for _, team := range project.Teams {
+		if project.CurrentTeamID == team.ID {
+			return &team, nil
 		}
 	}
-	return latestTeam
+	return nil, errors.New("not found")
 }
 
 func cloneRepo(repoURL, targetPath string) error {
