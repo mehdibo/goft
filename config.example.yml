@@ -1,6 +1,7 @@
 # You can create the client id and secret here: https://profile.intra.42.fr/oauth/applications/new
 client_id: "test"
 client_secret: "test"
+redirect_uri: "redirect uri path"
 # Defaults to profile if omitted
 scopes: [
     "public",
