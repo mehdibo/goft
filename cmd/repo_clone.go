@@ -3,7 +3,6 @@ package cmd
 import (
 	"fmt"
 	"goft/pkg/ftapi"
-	"log"
 	"os"
 	"os/exec"
 
@@ -26,30 +25,41 @@ func NewCloneProjectCmd(api *ftapi.APIInterface) *cobra.Command {
 			projects, err := (*api).GetUserProjects(id, nil, nil)
 			if err != nil {
 				color.Set(color.FgRed)
-				log.Print("GetUserProjects:", err)
+				cmd.PrintErr("GetUserProjects:", err)
 				color.Set(color.Reset)
 				return err
 			}
 			for _, project := range projects {
 				color.Set(color.Reset)
-				if args[0] == project.Project.Slug {
-					if len(project.Teams) != 0 {
-						var targetPath string
-						if len(args) == 2 {
-							targetPath = args[1]
-						} else {
-							targetPath = ""
-						}
-						return cloneRepo(project.Teams[0].RepoURL, targetPath)
-					} else {
-						cmd.Printf("Team of %s is not locked.", args[0])
-						return fmt.Errorf("%s is not in your projects", args[0])
-					}
+				if args[0] != project.Project.Slug {
+					continue
 				}
+				if len(project.Teams) == 0 {
+					continue
+				}
+				var targetPath string
+				if len(args) == 2 {
+					targetPath = args[1]
+				} else {
+					targetPath = ""
+				}
+				team := latestTeam(project.Teams)
+				return cloneRepo(team.RepoURL, targetPath)
 			}
-			return nil
+			cmd.Printf("Team of %s is not locked.", args[0])
+			return fmt.Errorf("%s is not in your projects", args[0])
 		},
 	}
+}
+
+func latestTeam(teams []ftapi.Team) ftapi.Team {
+	latestTeam := teams[0]
+	for _, team := range teams {
+		if latestTeam.ClosedAt.Before(team.ClosedAt) {
+			latestTeam = team
+		}
+	}
+	return latestTeam
 }
 
 func cloneRepo(repoURL, targetPath string) error {
