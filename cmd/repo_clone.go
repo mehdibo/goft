@@ -23,32 +23,37 @@ func NewCloneProjectCmd(api *ftapi.APIInterface) *cobra.Command {
 				return err
 			}
 			id := me.ID
-			projects, err := (*api).GetUserProjects(id, nil, nil)
-			if err != nil {
-				color.Set(color.FgRed)
-				cmd.PrintErr("GetUserProjects:", err)
-				color.Set(color.Reset)
-				return err
-			}
-			for _, project := range projects {
-				color.Set(color.Reset)
-				if args[0] != project.Project.Slug {
-					continue
-				}
-				if len(project.Teams) == 0 {
-					continue
-				}
-				var targetPath string
-				if len(args) == 2 {
-					targetPath = args[1]
-				} else {
-					targetPath = args[0]
-				}
-				team, err := currentTeam(project)
+			for i := 1; ; i++ {
+				projects, err := (*api).GetUserProjects(id, nil, nil, i)
 				if err != nil {
+					color.Set(color.FgRed)
+					cmd.PrintErr("GetUserProjects:", err)
+					color.Set(color.Reset)
 					return err
 				}
-				return cloneRepo(team.RepoURL, targetPath)
+				if len(projects) == 0 {
+					break
+				}
+				for _, project := range projects {
+					color.Set(color.Reset)
+					if args[0] != project.Project.Slug {
+						continue
+					}
+					if len(project.Teams) == 0 {
+						continue
+					}
+					var targetPath string
+					if len(args) == 2 {
+						targetPath = args[1]
+					} else {
+						targetPath = args[0]
+					}
+					team, err := currentTeam(project)
+					if err != nil {
+						return err
+					}
+					return cloneRepo(team.RepoURL, targetPath)
+				}
 			}
 			cmd.Printf("Team of %s is not locked.", args[0])
 			return fmt.Errorf("%s is not in your projects", args[0])

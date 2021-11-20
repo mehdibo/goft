@@ -19,19 +19,26 @@ func NewGetProjectListCmd(api *ftapi.APIInterface) *cobra.Command {
 				return err
 			}
 			id := me.ID
-			filter := map[string]string{
-				"marked": "false",
-			}
-			projects, err := (*api).GetUserProjects(id, filter, nil)
-			if err != nil {
-				color.Set(color.FgRed)
-				cmd.PrintErr("GetUserProjects:", err)
-				color.Set(color.Reset)
-				return err
-			}
-			for _, project := range projects {
-				if len(project.Teams) != 0 {
-					cmd.Println(project.Project.Slug)
+			/*
+				filter := map[string]string{
+					"marked": "false",
+				}
+			*/
+			for i := 1; ; i++ {
+				projects, err := (*api).GetUserProjects(id, nil, nil, i)
+				if err != nil {
+					color.Set(color.FgRed)
+					cmd.PrintErr("GetUserProjects:", err)
+					color.Set(color.Reset)
+					return err
+				}
+				if len(projects) == 0 {
+					break
+				}
+				for _, project := range projects {
+					if len(project.Teams) != 0 {
+						cmd.Println(project.Project.Slug)
+					}
 				}
 			}
 			return nil

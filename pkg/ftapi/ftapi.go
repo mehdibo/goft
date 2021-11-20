@@ -44,7 +44,7 @@ type APIInterface interface {
 	CreateFreePastAgu(login string, duration int, reason string) error
 
 	GetProjectByName(name string) (*Project, error)
-	GetUserProjects(loginID int, filter_param map[string]string, range_param map[string]string) ([]*ProjectUser, error)
+	GetUserProjects(loginID int, filter_param map[string]string, range_param map[string]string, page_number int) ([]*ProjectUser, error)
 }
 
 // API This is a struct to send authenticated requests to the 42 API
@@ -455,7 +455,7 @@ func (ft *API) GetToken() (*oauth2.Token, error) {
 	return transport.Source.Token()
 }
 
-func (ft *API) GetUserProjects(loginID int, filter_param map[string]string, range_param map[string]string) ([]*ProjectUser, error) {
+func (ft *API) GetUserProjects(loginID int, filter_param map[string]string, range_param map[string]string, page_number int) ([]*ProjectUser, error) {
 	strID := strconv.Itoa(loginID)
 	req, err := http.NewRequest("GET", ft.apiEndpoint+"/users/"+strID+"/projects_users", nil)
 	if err != nil {
@@ -470,6 +470,10 @@ func (ft *API) GetUserProjects(loginID int, filter_param map[string]string, rang
 	}
 	for k, v := range range_param {
 		params.Add("range["+k+"]", v)
+	}
+	if page_number > 0 {
+		str_num := strconv.Itoa(page_number)
+		params.Add("page[number]", str_num)
 	}
 	req.URL.RawQuery = params.Encode()
 	resp, err := ft.do(req)
