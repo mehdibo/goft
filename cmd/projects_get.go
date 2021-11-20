@@ -28,7 +28,7 @@ Estimate time: %s
 
 func NewGetProjectCmd(api *ftapi.APIInterface) *cobra.Command {
 	return &cobra.Command{
-		Use:   "get project",
+		Use:   "get",
 		Short: "Get details about a project",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
