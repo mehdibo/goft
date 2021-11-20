@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"encoding/json"
 	"goft/pkg/ftapi"
 
 	"github.com/fatih/color"
@@ -16,14 +15,12 @@ func NewLoginCmd(api *ftapi.APIInterface) *cobra.Command {
 		Args:  cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			defer saveConfig()
-			resp, err := (*api).Get("/me")
+			user, err := (*api).GetMe()
 			if err != nil {
 				return err
 			}
-			var m map[string]interface{}
-			err = json.NewDecoder(resp.Body).Decode(&m)
 			color.Set(color.FgGreen)
-			cmd.Printf("Logged in as %s\n", m["login"])
+			cmd.Printf("Logged in as %s\n", user.Login)
 			color.Set(color.Reset)
 			return nil
 		},
