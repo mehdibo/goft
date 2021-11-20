@@ -41,7 +41,7 @@ func NewCloneProjectCmd(api *ftapi.APIInterface) *cobra.Command {
 				if len(args) == 2 {
 					targetPath = args[1]
 				} else {
-					targetPath = ""
+					targetPath = args[0]
 				}
 				team := latestTeam(project.Teams)
 				return cloneRepo(team.RepoURL, targetPath)
