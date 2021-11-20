@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"goft/pkg/ftapi"
-	"log"
 
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
@@ -11,7 +10,7 @@ import (
 func NewGetProjectListCmd(api *ftapi.APIInterface) *cobra.Command {
 	return &cobra.Command{
 		Use:   "list",
-		Short: "Registered project list",
+		Short: "Show team locked project list",
 		Args:  cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			defer saveConfig()
@@ -26,19 +25,14 @@ func NewGetProjectListCmd(api *ftapi.APIInterface) *cobra.Command {
 			projects, err := (*api).GetUserProjects(id, filter, nil)
 			if err != nil {
 				color.Set(color.FgRed)
-				log.Print("GetUserProjects:", err)
+				cmd.PrintErr("GetUserProjects:", err)
 				color.Set(color.Reset)
 				return err
 			}
 			for _, project := range projects {
-				//				color.Set(color.FgGreen)
-				cmd.Println(project.Project.Slug)
-				/*
-					color.Set(color.Reset)
-					if len(project.Teams) != 0 {
-						cmd.Println(project.Teams[0].RepoURL)
-					}
-				*/
+				if len(project.Teams) != 0 {
+					cmd.Println(project.Project.Slug)
+				}
 			}
 			return nil
 		},

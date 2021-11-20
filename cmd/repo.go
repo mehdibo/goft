@@ -7,8 +7,8 @@ import (
 // NewUsersCmd Creates new users command
 func NewProjectsCmd() *cobra.Command {
 	return &cobra.Command{
-		Use:   "projects",
-		Short: "Interact with the project entity",
+		Use:   "repo",
+		Short: "Handle your registerd repogitory",
 	}
 
 }
