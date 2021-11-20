@@ -28,6 +28,7 @@ type APIInterface interface {
 	SetUserImage(login string, img *os.File) error
 	CreateClose(close *Close) error
 	GetUserByLogin(login string) (*User, error)
+	GetMe() (*User, error)
 	UpdateUser(login string, data *User) error
 	AddCorrectionPoints(login string, points uint, reason string) error
 	RemoveCorrectionPoints(login string, points uint, reason string) error
@@ -252,6 +253,28 @@ func (ft *API) CreateClose(close *Close) error {
 // GetUserByLogin gets a user by the provided login
 func (ft *API) GetUserByLogin(login string) (*User, error) {
 	resp, err := ft.Get("/users/" + login)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		switch resp.StatusCode {
+		case http.StatusNotFound:
+			return nil, errors.New("user not found")
+		default:
+			return nil, errors.New("failed getting user")
+		}
+	}
+	var user User
+	err = parseJSON(resp.Body, &user)
+	if err != nil {
+		return nil, err
+	}
+	return &user, nil
+}
+
+func (ft *API) GetMe() (*User, error) {
+	resp, err := ft.Get("/me")
 	if err != nil {
 		return nil, err
 	}
