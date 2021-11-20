@@ -61,3 +61,37 @@ type Project struct {
 	Videos          []string         `json:"videos,omitempty"` // TODO
 	ProjectSessions []*session       `json:"project_sessions,omitempty"`
 }
+
+type Team struct {
+	ID               int       `json:"id,omitempty"`
+	Name             string    `json:"name,omitempty"`
+	URL              string    `json:"url,omitempty"`
+	FinalMark        int       `json:"final_mark,omitempty"`
+	ProjectID        int       `json:"project_id,omitempty"`
+	CreatedAt        time.Time `json:"created_at,omitempty"`
+	UpdatedAt        time.Time `json:"updated_at,omitempty"`
+	Status           string    `json:"status,omitempty"`
+	TerminatingAt    time.Time `json:"terminating_at,omitempty"`
+	Users            []User    `json:"users,omitempty"`
+	Locked           bool      `json:"locked?,omitempty"`
+	Validated        bool      `json:"validated?,omitempty"`
+	Closed           bool      `json:"closed?,omitempty"`
+	RepoURL          string    `json:"repo_url,omitempty"`
+	RepoUUID         string    `json:"repo_uuid,omitempty"`
+	LockedAt         time.Time `json:"locked_at,omitempty"`
+	ClosedAt         time.Time `json:"closed_at,omitempty"`
+	ProjectSessionID int       `json:"project_session_id,omitempty"`
+}
+
+type ProjectUser struct {
+	ID            int     `json:"id,omitempty"`
+	Occurrence    int     `json:"occurrence,omitempty"`
+	FinalMark     int     `json:"final_mark,omitempty"`
+	Status        string  `json:"status,omitempty"`
+	Validated     bool    `json:"validated?,omitempty"`
+	CurrentTeamID int     `json:"current_team_id,omitempty"`
+	Project       Project `json:"project,omitempty"`
+	CursusIDs     []int   `json:"cursus_ids,omitempty"`
+	User          User    `json:"user,omitempty"`
+	Teams         []Team  `json:"teams,omitempty"`
+}
