@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"goft/pkg/ftapi"
 
 	"github.com/fatih/color"
@@ -39,7 +40,7 @@ func NewGetProjectListCmd(api *ftapi.APIInterface) *cobra.Command {
 				}
 				for _, project := range projects {
 					if len(project.Teams) != 0 {
-						cmd.Println(project.Project.Slug)
+						fmt.Println(project.Project.Slug)
 						count++
 					}
 					if count >= limit {
