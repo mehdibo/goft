@@ -109,11 +109,13 @@ func LoginRedirectHandler(w http.ResponseWriter, r *http.Request) {
 	code := r.URL.Query()["code"]
 	if code == nil || len(code) == 0 {
 		fmt.Fprint(w, "Invalid Parameter")
+		return
 	}
 	ctx := context.Background()
 	tok, err := config.Exchange(ctx, code[0])
 	if err != nil {
 		fmt.Fprintf(w, "OAuth Error:%v", err)
+		return
 	}
 	tokenChan <- tok
 	fmt.Fprintln(w, "Successfully logged in. Please close the tab.")
