@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"goft/pkg/ftapi"
 	"log"
 	"net/http"
 	"os"
@@ -50,6 +51,11 @@ func genToken(config *oauth2.Config) (*oauth2.Token, error) {
 			panic(err)
 		}
 		httpServerExitDone.Wait()
+
+		if login, err := getLogin(config, token); err == nil {
+			viper.Set("login", login)
+		}
+
 	} else {
 		token = &oauth2.Token{
 			AccessToken:  viper.GetString("access_token"),
@@ -63,6 +69,17 @@ func genToken(config *oauth2.Config) (*oauth2.Token, error) {
 		return nil, errors.New("generate token fail")
 	}
 	return token, nil
+}
+
+func getLogin(config *oauth2.Config, token *oauth2.Token) (string, error) {
+	ctx := context.Background()
+	client := config.Client(ctx, token)
+	api := ftapi.New(viper.GetString("api_endpoint"), client)
+	user, err := api.GetMe()
+	if err != nil {
+		return "", err
+	}
+	return user.Login, nil
 }
 
 func saveConfig() {

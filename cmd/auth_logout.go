@@ -29,7 +29,7 @@ func NewLogoutCmd(api *ftapi.APIInterface) *cobra.Command {
 			}
 			viper.WriteConfig()
 			color.Set(color.FgGreen)
-			cmd.Println("Logged out")
+			cmd.Println("Logged out as ", viper.GetString("login"))
 			color.Set(color.Reset)
 			return nil
 		},

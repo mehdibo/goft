@@ -6,6 +6,7 @@ import (
 
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 func NewRepoPathCmd(api *ftapi.APIInterface) *cobra.Command {
@@ -15,13 +16,9 @@ func NewRepoPathCmd(api *ftapi.APIInterface) *cobra.Command {
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			defer saveConfig()
-			me, err := (*api).GetMe()
-			if err != nil {
-				return err
-			}
-			id := me.ID
+			login := viper.GetString("login")
 			for i := 1; ; i++ {
-				projects, err := (*api).GetUserProjects(id, nil, nil, i)
+				projects, err := (*api).GetUserProjects(login, nil, nil, i)
 				if err != nil {
 					color.Set(color.FgRed)
 					cmd.PrintErr("GetUserProjects:", err)

@@ -10,6 +10,7 @@ import (
 	"strconv"
 
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 // browseCmd represents the browse command
@@ -33,20 +34,22 @@ func NewBrowseCmd(api *ftapi.APIInterface) *cobra.Command {
 func getProjectURL(api *ftapi.APIInterface, slug string) (string, error) {
 	var url string
 
-	user, err := (*api).GetMe()
-	if err != nil {
-		return "", err
-	}
+	/*
+		user, err := (*api).GetMe()
+		if err != nil {
+			return "", err
+		}
+	*/
+	login := viper.GetString("login")
 
 	if is42Cursus(api, slug) {
 		baseURL := "https://projects.intra.42.fr/"
-		url = baseURL + slug + "/" + user.Login
+		url = baseURL + slug + "/" + login
 		return url, nil
 	} else {
 		baseURL := "https://projects.intra.42.fr/projects/"
-		id := user.ID
 		for i := 1; ; i++ {
-			projects, err := (*api).GetUserProjects(id, nil, nil, i)
+			projects, err := (*api).GetUserProjects(login, nil, nil, i)
 			if err != nil {
 				return "", err
 			}

@@ -6,6 +6,7 @@ import (
 
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 func NewGetProjectListCmd(api *ftapi.APIInterface) *cobra.Command {
@@ -20,15 +21,11 @@ func NewGetProjectListCmd(api *ftapi.APIInterface) *cobra.Command {
 			if limit, err = cmd.PersistentFlags().GetInt("limit"); err != nil {
 				return err
 			}
-			me, err := (*api).GetMe()
-			if err != nil {
-				return err
-			}
-			id := me.ID
+			login := viper.GetString("login")
 			count := 0
 		loop:
 			for i := 1; ; i++ {
-				projects, err := (*api).GetUserProjects(id, nil, nil, i)
+				projects, err := (*api).GetUserProjects(login, nil, nil, i)
 				if err != nil {
 					color.Set(color.FgRed)
 					cmd.PrintErr("GetUserProjects:", err)
