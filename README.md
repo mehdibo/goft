@@ -45,6 +45,6 @@ make install
 
 
 ## Configuration
-After installing Goft you will have to modify `~/.goft.yml` with your credentials.
+After installing Goft you will have to modify `~/.config/goft/config.yml` with your credentials.
 
 This file makes it easier to run commands without having to pass the `--config` flag every time.
