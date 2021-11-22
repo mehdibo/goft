@@ -1,16 +1,13 @@
 package cmd
 
 import (
-	"errors"
 	"fmt"
 	"goft/pkg/ftapi"
 	"os"
 	"os/exec"
 	"runtime"
-	"strconv"
 
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 // browseCmd represents the browse command
@@ -22,63 +19,11 @@ func NewBrowseCmd(api *ftapi.APIInterface) *cobra.Command {
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			defer saveConfig()
-			url, err := getProjectURL(api, args[0])
-			if err != nil {
-				return err
-			}
+			baseURL := "https://projects.intra.42.fr/"
+			url := baseURL + args[0] + "/mine"
 			return execBrowser(url)
 		},
 	}
-}
-
-func getProjectURL(api *ftapi.APIInterface, slug string) (string, error) {
-	var url string
-
-	/*
-		user, err := (*api).GetMe()
-		if err != nil {
-			return "", err
-		}
-	*/
-	login := viper.GetString("login")
-
-	if is42Cursus(api, slug) {
-		baseURL := "https://projects.intra.42.fr/"
-		url = baseURL + slug + "/" + login
-		return url, nil
-	} else {
-		baseURL := "https://projects.intra.42.fr/projects/"
-		for i := 1; ; i++ {
-			projects, err := (*api).GetUserProjects(login, nil, nil, i)
-			if err != nil {
-				return "", err
-			}
-			if len(projects) == 0 {
-				break
-			}
-			for _, project := range projects {
-				if slug == project.Project.Slug {
-					url = baseURL + slug + "/projects_users/" + strconv.Itoa(project.ID)
-					return url, nil
-				}
-			}
-		}
-	}
-	return "", errors.New("project not found")
-}
-
-func is42Cursus(api *ftapi.APIInterface, slug string) bool {
-	project, err := (*api).GetProjectByName(slug)
-	if err != nil {
-		return false
-	}
-	cursuses := project.Cursus
-	for _, cursus := range cursuses {
-		if cursus.Slug == "42cursus" {
-			return true
-		}
-	}
-	return false
 }
 
 func execBrowser(url string) error {
