@@ -52,6 +52,10 @@ func NewCloneProjectCmd(api *ftapi.APIInterface) *cobra.Command {
 					if err != nil {
 						return err
 					}
+					if team.RepoURL == "" {
+						fmt.Fprintf(os.Stderr, "repository not found: %s\n", args[0])
+						return nil
+					}
 					return cloneRepo(team.RepoURL, targetPath)
 				}
 			}

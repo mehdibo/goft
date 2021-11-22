@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"goft/pkg/ftapi"
+	"os"
 
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
@@ -42,6 +43,10 @@ func NewRepoPathCmd(api *ftapi.APIInterface) *cobra.Command {
 					team, err := currentTeam(project)
 					if err != nil {
 						return err
+					}
+					if team.RepoURL == "" {
+						fmt.Fprintf(os.Stderr, "repository not found: %s\n", args[0])
+						return nil
 					}
 					fmt.Println(team.RepoURL)
 					return nil
