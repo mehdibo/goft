@@ -13,7 +13,7 @@ import (
 // browseCmd represents the browse command
 func NewBrowseCmd(api *ftapi.APIInterface) *cobra.Command {
 	return &cobra.Command{
-		Use:   "browse <command>",
+		Use:   "browse <project>",
 		Short: "Open the project page in the web browser",
 		Long:  `Open the project page in the web browser`,
 		Args:  cobra.ExactArgs(1),
