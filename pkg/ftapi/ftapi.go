@@ -5,7 +5,6 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"golang.org/x/oauth2/clientcredentials"
 	"io"
 	"mime/multipart"
 	"net/http"
@@ -36,7 +35,6 @@ type APIInterface interface {
 	RemoveCorrectionPoints(login string, points uint, reason string) error
 	GetUserAgus(login string) ([]Agu, error)
 	CreateFreePastAgu(login string, duration int, reason string) error
-	GetProjectByName(name string) (*Project, error)
 	GetToken() (*oauth2.Token, error)
 }
 
