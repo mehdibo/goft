@@ -16,11 +16,11 @@ func NewCloneProjectCmd(api *ftapi.APIInterface) *cobra.Command {
 		Short: "Clone a repogitory locally",
 		Args:  cobra.RangeArgs(1, 2),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			var user string
-			var err error
-			if user, err = cmd.PersistentFlags().GetString("user"); err != nil {
+			user, err := cmd.PersistentFlags().GetString("user")
+			if err != nil {
 				return err
 			}
+		loop:
 			for i := 1; ; i++ {
 				projects, err := (*api).GetUserProjects(user, nil, nil, i)
 				if err != nil {
@@ -34,7 +34,7 @@ func NewCloneProjectCmd(api *ftapi.APIInterface) *cobra.Command {
 						continue
 					}
 					if len(project.Teams) == 0 {
-						continue
+						break loop
 					}
 					var targetPath string
 					if len(args) == 2 {
@@ -53,8 +53,7 @@ func NewCloneProjectCmd(api *ftapi.APIInterface) *cobra.Command {
 					return cloneRepo(team.RepoURL, targetPath)
 				}
 			}
-			cmd.Printf("Team of %s is not locked.", args[0])
-			return fmt.Errorf("%s is not in your projects", args[0])
+			return fmt.Errorf("%s's team is not locked.", args[0])
 		},
 	}
 }
