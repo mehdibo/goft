@@ -2,21 +2,19 @@ package cmd
 
 import (
 	"bytes"
+	"github.com/spf13/cobra"
+	"github.com/stretchr/testify/assert"
 	"goft/pkg/ftapi"
 	"io"
 	"io/ioutil"
 	"net/http"
 	"os"
 	"testing"
-
-	"github.com/spf13/cobra"
-	"github.com/stretchr/testify/assert"
 )
 
 type createCloseMockAPI struct {
 	t *testing.T
 }
-
 func (m *createCloseMockAPI) Get(url string) (*http.Response, error) {
 	return nil, nil
 }
@@ -54,13 +52,13 @@ func (m *createCloseMockAPI) GetUserByLogin(login string) (*ftapi.User, error) {
 		ID: 42,
 	}, nil
 }
-func (m *createCloseMockAPI) UpdateUser(login string, data *ftapi.User) error {
+func (m *createCloseMockAPI) UpdateUser(login string, data *ftapi.User) error  {
 	return nil
 }
-func (m *createCloseMockAPI) AddCorrectionPoints(login string, points uint, reason string) error {
+func (m *createCloseMockAPI) AddCorrectionPoints(login string, points uint, reason string) error{
 	return nil
 }
-func (m *createCloseMockAPI) RemoveCorrectionPoints(login string, points uint, reason string) error {
+func (m *createCloseMockAPI) RemoveCorrectionPoints(login string, points uint, reason string) error{
 	return nil
 }
 func (m *createCloseMockAPI) GetUserAgus(login string) ([]ftapi.Agu, error) {
@@ -68,9 +66,6 @@ func (m *createCloseMockAPI) GetUserAgus(login string) ([]ftapi.Agu, error) {
 }
 func (m *createCloseMockAPI) CreateFreePastAgu(login string, duration int, reason string) error {
 	return nil
-}
-func (m *createCloseMockAPI) GetProjectByName(name string) (*ftapi.Project, error) {
-	return nil, nil
 }
 
 func TestNewCloseCreateCmd(t *testing.T) {

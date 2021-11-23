@@ -2,21 +2,19 @@ package cmd
 
 import (
 	"bytes"
+	"github.com/spf13/cobra"
+	"github.com/stretchr/testify/assert"
 	"goft/pkg/ftapi"
 	"io"
 	"io/ioutil"
 	"net/http"
 	"os"
 	"testing"
-
-	"github.com/spf13/cobra"
-	"github.com/stretchr/testify/assert"
 )
 
 type usersGetMockAPI struct {
 	t *testing.T
 }
-
 func (m *usersGetMockAPI) Get(url string) (*http.Response, error) {
 	return nil, nil
 }
@@ -54,33 +52,33 @@ func (m *usersGetMockAPI) GetUserByLogin(login string) (*ftapi.User, error) {
 		VogsphereID: 42,
 	}
 	return &ftapi.User{
-		ID:               1337,
-		Login:            "spoody",
-		Email:            "spoody@local.test",
-		FirstName:        "Spooder",
-		LastName:         "Webz",
-		Phone:            "+2126666666666",
-		ImageURL:         "https://avatars.githubusercontent.com/u/5004111?s=460&u=a5eae6fc0bcdc8c087af14c2e476684daaeb2bbc&v=4",
-		IsStaff:          true,
-		Kind:             "",
-		URL:              "",
-		PoolMonth:        "April",
-		PoolYear:         "2019",
-		Campuses:         []*ftapi.Campus{&campus},
-		CampusUsers:      nil,
-		Roles:            nil,
-		CursusUsers:      nil,
+		ID:             1337,
+		Login:          "spoody",
+		Email:          "spoody@local.test",
+		FirstName:      "Spooder",
+		LastName:       "Webz",
+		Phone:          "+2126666666666",
+		ImageURL:       "https://avatars.githubusercontent.com/u/5004111?s=460&u=a5eae6fc0bcdc8c087af14c2e476684daaeb2bbc&v=4",
+		IsStaff:        true,
+		Kind:           "",
+		URL:            "",
+		PoolMonth:      "April",
+		PoolYear:       "2019",
+		Campuses:       []*ftapi.Campus{&campus},
+		CampusUsers:    nil,
+		Roles:          nil,
+		CursusUsers:    nil,
 		CorrectionPoints: 4,
-		Wallet:           1337,
+		Wallet: 1337,
 	}, nil
 }
-func (m *usersGetMockAPI) UpdateUser(login string, data *ftapi.User) error {
+func (m *usersGetMockAPI) UpdateUser(login string, data *ftapi.User) error  {
 	return nil
 }
-func (m *usersGetMockAPI) AddCorrectionPoints(login string, points uint, reason string) error {
+func (m *usersGetMockAPI) AddCorrectionPoints(login string, points uint, reason string) error{
 	return nil
 }
-func (m *usersGetMockAPI) RemoveCorrectionPoints(login string, points uint, reason string) error {
+func (m *usersGetMockAPI) RemoveCorrectionPoints(login string, points uint, reason string) error{
 	return nil
 }
 func (m *usersGetMockAPI) GetUserAgus(login string) ([]ftapi.Agu, error) {
@@ -88,9 +86,6 @@ func (m *usersGetMockAPI) GetUserAgus(login string) ([]ftapi.Agu, error) {
 }
 func (m *usersGetMockAPI) CreateFreePastAgu(login string, duration int, reason string) error {
 	return nil
-}
-func (m *usersGetMockAPI) GetProjectByName(name string) (*ftapi.Project, error) {
-	return nil, nil
 }
 
 func TestNewGetUserCmd(t *testing.T) {

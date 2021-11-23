@@ -2,21 +2,19 @@ package cmd
 
 import (
 	"bytes"
+	"github.com/spf13/cobra"
+	"github.com/stretchr/testify/assert"
 	"goft/pkg/ftapi"
 	"io"
 	"io/ioutil"
 	"net/http"
 	"os"
 	"testing"
-
-	"github.com/spf13/cobra"
-	"github.com/stretchr/testify/assert"
 )
 
 type setImgMockAPI struct {
 	t *testing.T
 }
-
 func (m *setImgMockAPI) Get(url string) (*http.Response, error) {
 	return nil, nil
 }
@@ -54,13 +52,13 @@ func (m *setImgMockAPI) CreateClose(close *ftapi.Close) error {
 func (m *setImgMockAPI) GetUserByLogin(login string) (*ftapi.User, error) {
 	return nil, nil
 }
-func (m *setImgMockAPI) UpdateUser(login string, data *ftapi.User) error {
+func (m *setImgMockAPI) UpdateUser(login string, data *ftapi.User) error  {
 	return nil
 }
-func (m *setImgMockAPI) AddCorrectionPoints(login string, points uint, reason string) error {
+func (m *setImgMockAPI) AddCorrectionPoints(login string, points uint, reason string) error{
 	return nil
 }
-func (m *setImgMockAPI) RemoveCorrectionPoints(login string, points uint, reason string) error {
+func (m *setImgMockAPI) RemoveCorrectionPoints(login string, points uint, reason string) error{
 	return nil
 }
 func (m *setImgMockAPI) GetUserAgus(login string) ([]ftapi.Agu, error) {
@@ -68,9 +66,6 @@ func (m *setImgMockAPI) GetUserAgus(login string) ([]ftapi.Agu, error) {
 }
 func (m *setImgMockAPI) CreateFreePastAgu(login string, duration int, reason string) error {
 	return nil
-}
-func (m *setImgMockAPI) GetProjectByName(name string) (*ftapi.Project, error) {
-	return nil, nil
 }
 
 func TestNewSetImgCmd(t *testing.T) {
@@ -154,6 +149,7 @@ func TestCreateUserWithSmallFile(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer os.Remove(tmpFile.Name())
+
 
 	setimgCmd := NewSetImgCmd(&api)
 	setimgCmd.SetArgs([]string{"spoody", tmpFile.Name()})
