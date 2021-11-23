@@ -15,14 +15,13 @@ func NewRepoPathCmd(api *ftapi.APIInterface) *cobra.Command {
 		Short: "Show project repogitory path",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			defer saveConfig()
-			me, err := (*api).GetMe()
-			if err != nil {
+			var user string
+			var err error
+			if user, err = cmd.PersistentFlags().GetString("user"); err != nil {
 				return err
 			}
-			id := me.ID
 			for i := 1; ; i++ {
-				projects, err := (*api).GetUserProjects(id, nil, nil, i)
+				projects, err := (*api).GetUserProjects(user, nil, nil, i)
 				if err != nil {
 					color.Set(color.FgRed)
 					cmd.PrintErr("GetUserProjects:", err)
@@ -61,5 +60,6 @@ func NewRepoPathCmd(api *ftapi.APIInterface) *cobra.Command {
 var repoPathCmd = NewRepoPathCmd(&API)
 
 func init() {
+	repoPathCmd.PersistentFlags().StringP("user", "u", os.Getenv("USER"), "Set specific user")
 	projectsCmd.AddCommand(repoPathCmd)
 }
