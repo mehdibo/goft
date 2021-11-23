@@ -15,20 +15,18 @@ func NewGetProjectListCmd(api *ftapi.APIInterface) *cobra.Command {
 		Args:  cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
 
-			var limit int
-			var err error
-			if limit, err = cmd.PersistentFlags().GetInt("limit"); err != nil {
+			limit, err := cmd.PersistentFlags().GetInt("limit")
+			if err != nil {
 				return err
 			}
-			var user string
-			if user, err = cmd.PersistentFlags().GetString("user"); err != nil {
+			user, err := cmd.PersistentFlags().GetString("user")
+			if err != nil {
 				return err
 			}
-			var isQuiet bool
-			if isQuiet, err = cmd.PersistentFlags().GetBool("quiet"); err != nil {
+			isQuiet, err := cmd.PersistentFlags().GetBool("quiet")
+			if err != nil {
 				return err
 			}
-
 			if !isQuiet {
 				fmt.Printf("\nShowing %d projects in @%s\n\n", limit, user)
 			}
