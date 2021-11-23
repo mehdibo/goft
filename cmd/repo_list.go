@@ -3,8 +3,8 @@ package cmd
 import (
 	"fmt"
 	"goft/pkg/ftapi"
+	"os"
 
-	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 )
 
@@ -14,25 +14,20 @@ func NewGetProjectListCmd(api *ftapi.APIInterface) *cobra.Command {
 		Short: "Show team locked project list",
 		Args:  cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			defer saveConfig()
 			var limit int
 			var err error
 			if limit, err = cmd.PersistentFlags().GetInt("limit"); err != nil {
 				return err
 			}
-			me, err := (*api).GetMe()
-			if err != nil {
+			var user string
+			if user, err = cmd.PersistentFlags().GetString("user"); err != nil {
 				return err
 			}
-			id := me.ID
 			count := 0
 		loop:
 			for i := 1; ; i++ {
-				projects, err := (*api).GetUserProjects(id, nil, nil, i)
+				projects, err := (*api).GetUserProjects(user, nil, nil, i)
 				if err != nil {
-					color.Set(color.FgRed)
-					cmd.PrintErr("GetUserProjects:", err)
-					color.Set(color.Reset)
 					return err
 				}
 				if len(projects) == 0 {
@@ -57,5 +52,6 @@ var getProjectListCmd = NewGetProjectListCmd(&API)
 
 func init() {
 	getProjectListCmd.PersistentFlags().IntP("limit", "L", 5, "Maximum number of repositories to list")
+	getProjectListCmd.PersistentFlags().StringP("user", "u", os.Getenv("USER"), "Set specific user")
 	projectsCmd.AddCommand(getProjectListCmd)
 }
