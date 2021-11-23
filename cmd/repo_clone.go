@@ -12,8 +12,8 @@ import (
 
 func NewCloneProjectCmd(api *ftapi.APIInterface) *cobra.Command {
 	return &cobra.Command{
-		Use:   "clone",
-		Short: "Clone project repogitory",
+		Use:   "clone <project slug>",
+		Short: "Clone a repogitory locally",
 		Args:  cobra.RangeArgs(1, 2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			var user string
