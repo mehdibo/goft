@@ -57,4 +57,4 @@ install: $(NAME)
 .PHONY: uninstall
 uninstall:
 	sudo rm $(INSTALL_PATH)/$(NAME)
-	rm $(CONFIG_FILE_TARGET)
+	rm -r $(CONFIG_FILE_DIR)
