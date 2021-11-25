@@ -2,14 +2,13 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/spf13/cobra"
 	"goft/pkg/ftapi"
-	"golang.org/x/oauth2"
-	"golang.org/x/oauth2/clientcredentials"
 	"os"
 
-	"github.com/mitchellh/go-homedir"
+	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"golang.org/x/oauth2"
+	"golang.org/x/oauth2/clientcredentials"
 )
 
 var (
@@ -20,14 +19,14 @@ var (
 	Version = "development-build"
 )
 
-
 // NewRootCmd Create new root command
 func NewRootCmd() *cobra.Command {
 	cmd := cobra.Command{
 		Use:   "goft",
 		Short: "CLI tool to interact with 42's API",
 	}
-	cmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.goft.yaml)")
+	defaultconf := os.Getenv("HOME") + "/.config/goft/config.yml"
+	cmd.PersistentFlags().StringVar(&cfgFile, "config", defaultconf, "config file")
 	cmd.Version = Version
 	return &cmd
 }
@@ -49,25 +48,7 @@ func init() {
 
 // initConfig reads in config file and ENV variables if set.
 func initConfig() {
-	if cfgFile != "" {
-		// Use config file from the flag.
-		viper.SetConfigFile(cfgFile)
-	} else {
-		// Find home directory.
-		home, err := homedir.Dir()
-		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
-		}
-
-		// Search config in home directory with name ".goft" (without extension).
-		viper.AddConfigPath(home)
-		viper.SetConfigName(".goft")
-	}
-
-	// Load config from env variables if available
-	viper.SetEnvPrefix("goft")
-	viper.AutomaticEnv()
+	viper.SetConfigFile(cfgFile)
 
 	viper.SetDefault("token_endpoint", "https://api.intra.42.fr/oauth/token")
 	viper.SetDefault("api_endpoint", "https://api.intra.42.fr/v2")
